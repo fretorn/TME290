@@ -174,6 +174,36 @@ helloworld.cpp.s:
 	$(MAKE) -f CMakeFiles/helloworld.dir/build.make CMakeFiles/helloworld.dir/helloworld.cpp.s
 .PHONY : helloworld.cpp.s
 
+messages.o: messages.cpp.o
+
+.PHONY : messages.o
+
+# target to build an object file
+messages.cpp.o:
+	$(MAKE) -f CMakeFiles/helloworld.dir/build.make CMakeFiles/helloworld.dir/messages.cpp.o
+	$(MAKE) -f CMakeFiles/helloworld-runner.dir/build.make CMakeFiles/helloworld-runner.dir/messages.cpp.o
+.PHONY : messages.cpp.o
+
+messages.i: messages.cpp.i
+
+.PHONY : messages.i
+
+# target to preprocess a source file
+messages.cpp.i:
+	$(MAKE) -f CMakeFiles/helloworld.dir/build.make CMakeFiles/helloworld.dir/messages.cpp.i
+	$(MAKE) -f CMakeFiles/helloworld-runner.dir/build.make CMakeFiles/helloworld-runner.dir/messages.cpp.i
+.PHONY : messages.cpp.i
+
+messages.s: messages.cpp.s
+
+.PHONY : messages.s
+
+# target to generate assembly for a file
+messages.cpp.s:
+	$(MAKE) -f CMakeFiles/helloworld.dir/build.make CMakeFiles/helloworld.dir/messages.cpp.s
+	$(MAKE) -f CMakeFiles/helloworld-runner.dir/build.make CMakeFiles/helloworld-runner.dir/messages.cpp.s
+.PHONY : messages.cpp.s
+
 prime-checker.o: prime-checker.cpp.o
 
 .PHONY : prime-checker.o
@@ -245,6 +275,9 @@ help:
 	@echo "... helloworld.o"
 	@echo "... helloworld.i"
 	@echo "... helloworld.s"
+	@echo "... messages.o"
+	@echo "... messages.i"
+	@echo "... messages.s"
 	@echo "... prime-checker.o"
 	@echo "... prime-checker.i"
 	@echo "... prime-checker.s"

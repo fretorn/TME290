@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
+  "messages.cpp"
   "CMakeFiles/helloworld.dir/helloworld.cpp.o"
   "CMakeFiles/helloworld.dir/prime-checker.cpp.o"
+  "CMakeFiles/helloworld.dir/messages.cpp.o"
   "helloworld.pdb"
   "helloworld"
 )

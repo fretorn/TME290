@@ -6,5 +6,5 @@ CXX_FLAGS =  -Wall -Wextra -Werror   -std=gnu++14
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -isystem /home/fredrik/mytest/build 
 

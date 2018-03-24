@@ -57,9 +57,14 @@ include CMakeFiles/helloworld.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/helloworld.dir/flags.make
 
+messages.cpp: ../messages.odvd
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating messages.cpp"
+	cluon-msc --cpp-sources --cpp-add-include-file=messages.hpp --out=/home/fredrik/mytest/build/messages.cpp /home/fredrik/mytest/messages.odvd
+	cluon-msc --cpp-headers --out=/home/fredrik/mytest/build/messages.hpp /home/fredrik/mytest/messages.odvd
+
 CMakeFiles/helloworld.dir/helloworld.cpp.o: CMakeFiles/helloworld.dir/flags.make
 CMakeFiles/helloworld.dir/helloworld.cpp.o: ../helloworld.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/helloworld.dir/helloworld.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/helloworld.dir/helloworld.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/helloworld.dir/helloworld.cpp.o -c /home/fredrik/mytest/helloworld.cpp
 
 CMakeFiles/helloworld.dir/helloworld.cpp.i: cmake_force
@@ -83,7 +88,7 @@ CMakeFiles/helloworld.dir/helloworld.cpp.o.provides.build: CMakeFiles/helloworld
 
 CMakeFiles/helloworld.dir/prime-checker.cpp.o: CMakeFiles/helloworld.dir/flags.make
 CMakeFiles/helloworld.dir/prime-checker.cpp.o: ../prime-checker.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/helloworld.dir/prime-checker.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/helloworld.dir/prime-checker.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/helloworld.dir/prime-checker.cpp.o -c /home/fredrik/mytest/prime-checker.cpp
 
 CMakeFiles/helloworld.dir/prime-checker.cpp.i: cmake_force
@@ -105,19 +110,45 @@ CMakeFiles/helloworld.dir/prime-checker.cpp.o.provides: CMakeFiles/helloworld.di
 CMakeFiles/helloworld.dir/prime-checker.cpp.o.provides.build: CMakeFiles/helloworld.dir/prime-checker.cpp.o
 
 
+CMakeFiles/helloworld.dir/messages.cpp.o: CMakeFiles/helloworld.dir/flags.make
+CMakeFiles/helloworld.dir/messages.cpp.o: messages.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/helloworld.dir/messages.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/helloworld.dir/messages.cpp.o -c /home/fredrik/mytest/build/messages.cpp
+
+CMakeFiles/helloworld.dir/messages.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/helloworld.dir/messages.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fredrik/mytest/build/messages.cpp > CMakeFiles/helloworld.dir/messages.cpp.i
+
+CMakeFiles/helloworld.dir/messages.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/helloworld.dir/messages.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fredrik/mytest/build/messages.cpp -o CMakeFiles/helloworld.dir/messages.cpp.s
+
+CMakeFiles/helloworld.dir/messages.cpp.o.requires:
+
+.PHONY : CMakeFiles/helloworld.dir/messages.cpp.o.requires
+
+CMakeFiles/helloworld.dir/messages.cpp.o.provides: CMakeFiles/helloworld.dir/messages.cpp.o.requires
+	$(MAKE) -f CMakeFiles/helloworld.dir/build.make CMakeFiles/helloworld.dir/messages.cpp.o.provides.build
+.PHONY : CMakeFiles/helloworld.dir/messages.cpp.o.provides
+
+CMakeFiles/helloworld.dir/messages.cpp.o.provides.build: CMakeFiles/helloworld.dir/messages.cpp.o
+
+
 # Object files for target helloworld
 helloworld_OBJECTS = \
 "CMakeFiles/helloworld.dir/helloworld.cpp.o" \
-"CMakeFiles/helloworld.dir/prime-checker.cpp.o"
+"CMakeFiles/helloworld.dir/prime-checker.cpp.o" \
+"CMakeFiles/helloworld.dir/messages.cpp.o"
 
 # External object files for target helloworld
 helloworld_EXTERNAL_OBJECTS =
 
 helloworld: CMakeFiles/helloworld.dir/helloworld.cpp.o
 helloworld: CMakeFiles/helloworld.dir/prime-checker.cpp.o
+helloworld: CMakeFiles/helloworld.dir/messages.cpp.o
 helloworld: CMakeFiles/helloworld.dir/build.make
 helloworld: CMakeFiles/helloworld.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable helloworld"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/fredrik/mytest/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable helloworld"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/helloworld.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -127,6 +158,7 @@ CMakeFiles/helloworld.dir/build: helloworld
 
 CMakeFiles/helloworld.dir/requires: CMakeFiles/helloworld.dir/helloworld.cpp.o.requires
 CMakeFiles/helloworld.dir/requires: CMakeFiles/helloworld.dir/prime-checker.cpp.o.requires
+CMakeFiles/helloworld.dir/requires: CMakeFiles/helloworld.dir/messages.cpp.o.requires
 
 .PHONY : CMakeFiles/helloworld.dir/requires
 
@@ -134,7 +166,7 @@ CMakeFiles/helloworld.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/helloworld.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/helloworld.dir/clean
 
-CMakeFiles/helloworld.dir/depend:
+CMakeFiles/helloworld.dir/depend: messages.cpp
 	cd /home/fredrik/mytest/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/fredrik/mytest /home/fredrik/mytest /home/fredrik/mytest/build /home/fredrik/mytest/build /home/fredrik/mytest/build/CMakeFiles/helloworld.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/helloworld.dir/depend
 
