@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -Wextra -Werror   CMakeFiles/helloworld-runner.dir/test-prime-checker.cpp.o CMakeFiles/helloworld-runner.dir/prime-checker.cpp.o  -o helloworld-runner -rdynamic 

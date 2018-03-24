@@ -1,0 +1,5 @@
+/home/fredrik/mytest/build/CMakeFiles/test.dir
+/home/fredrik/mytest/build/CMakeFiles/helloworld.dir
+/home/fredrik/mytest/build/CMakeFiles/rebuild_cache.dir
+/home/fredrik/mytest/build/CMakeFiles/helloworld-runner.dir
+/home/fredrik/mytest/build/CMakeFiles/edit_cache.dir
