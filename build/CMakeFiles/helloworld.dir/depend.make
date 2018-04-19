@@ -3,7 +3,11 @@
 
 CMakeFiles/helloworld.dir/helloworld.cpp.o: ../cluon-complete.hpp
 CMakeFiles/helloworld.dir/helloworld.cpp.o: ../helloworld.cpp
+CMakeFiles/helloworld.dir/helloworld.cpp.o: ../messages.hpp
 CMakeFiles/helloworld.dir/helloworld.cpp.o: ../prime-checker.hpp
+
+CMakeFiles/helloworld.dir/messages.cpp.o: messages.cpp
+CMakeFiles/helloworld.dir/messages.cpp.o: messages.hpp
 
 CMakeFiles/helloworld.dir/prime-checker.cpp.o: ../prime-checker.cpp
 CMakeFiles/helloworld.dir/prime-checker.cpp.o: ../prime-checker.hpp
