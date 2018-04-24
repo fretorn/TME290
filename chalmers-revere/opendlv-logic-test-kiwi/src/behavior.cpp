@@ -24,7 +24,7 @@ Behavior::Behavior() noexcept:
   m_rightIrReading{},
   m_groundSteeringAngleRequest{},
   m_pedalPositionRequest{},
-  m_wheelSpeedRequest{} //Added this
+  m_wheelSpeedRequest{}, //Added this
   m_frontUltrasonicReadingMutex{},
   m_rearUltrasonicReadingMutex{},
   m_leftIrReadingMutex{},

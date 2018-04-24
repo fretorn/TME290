@@ -63,12 +63,15 @@ int32_t main(int32_t argc, char **argv) {
 
     auto atFrequency{[&VERBOSE, &behavior, &od4]() -> bool
       {
-        double R = 0.12; //[m] Radius of robot
-        double v0 = 0.5; //[m/s] Initial speed
-        double t1 = 3; //[s]
-        double t2 = 10; //[s]
-        double dt = 0.01; //[s]
-        double t += dt; //[s] Current time
+        float vL = 0.0f;
+        float vR = 0.0f;
+        //double R = 0.12; //[m] Radius of robot
+        float v0 = 0.5f; //[m/s] Initial speed
+        float t1 = 3.0f; //[s]
+        float t2 = 10.0f; //[s]
+        float dt = 0.01f; //[s]
+        float t = 0.0f; //[s] Current time
+        t += dt; 
         
         //Conditions for wheel speed
         if (t <= t1) {
@@ -86,8 +89,8 @@ int32_t main(int32_t argc, char **argv) {
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
         //auto wheelSpeedRquest = behavior.getWheelSpeedRequest(); //Added this
 
-        float leftWheelSpeedValue = 0.1f; //Added this
-        float rightWheelSpeedValue = 0.1f; //Added this
+        //float leftWheelSpeedValue = 0.1f; //Added this
+        //float rightWheelSpeedValue = 0.1f; //Added this
 
         //Added this
         opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
