@@ -45,7 +45,7 @@ services:
         command: "/usr/bin/opendlv-logic-test-kiwi --cid=111 --freq=10 --frame-id=0"
 
     ui-default:
-        image: chalmersrevere/opendlv-ui-default-amd64:v0.0.2
+        image: chalmersrevere/opendlv-ui-default-amd64:v0.0.3
         network_mode: "host"
         volumes:
           - ./simulation-map.txt:/srv/http/simulation-map.txt
