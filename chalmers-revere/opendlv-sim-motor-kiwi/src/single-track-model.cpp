@@ -27,17 +27,25 @@ SingleTrackModel::SingleTrackModel() noexcept:
   m_longitudinalSpeed{0.0f},
   m_lateralSpeed{0.0f},
   m_yawRate{0.0f},
-  m_wheelSpeed{0.0f},
+  m_wheelSpeedLeft{0.0f}, //Added this
+  m_wheelSpeedRight{0.0f}, //Added this
   m_groundSteeringAngle{0.0f},
   m_pedalPosition{0.0f}
 {
 }
 
-//Added void for WheelSpeedRequest
-void SingleTrackModel::setWheelSpeed(opendlv::proxy::WheelSpeedRequest const &wheelSpeedRequest) noexcept
+//Added this
+void SingleTrackModel::setWheelSpeedLeft(opendlv::proxy::WheelSpeedRequest const &wheelSpeedRequestLeft) noexcept
 {
-  std::lock_guard<std::mutex> lock(m_wheelSpeedMutex);
-  m_wheelSpeed = wheelSpeedRequest.wheelSpeed();
+  std::lock_guard<std::mutex> lock(m_wheelSpeedLeftMutex);
+  m_wheelSpeedLeft = wheelSpeedRequestLeft.wheelSpeed();
+}
+
+//Added this
+void SingleTrackModel::setWheelSpeedRight(opendlv::proxy::WheelSpeedRequest const &wheelSpeedRequestRight) noexcept
+{
+  std::lock_guard<std::mutex> lock(m_wheelSpeedRightMutex);
+  m_wheelSpeedRight = wheelSpeedRequestRight.wheelSpeed();
 }
 
 void SingleTrackModel::setGroundSteeringAngle(opendlv::proxy::GroundSteeringRequest const &groundSteeringAngle) noexcept
@@ -67,11 +75,13 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
   float groundSteeringAngleCopy;
   float pedalPositionCopy;
   {
-    //Added mutex lock for WheelSpeed
+    
     std::lock_guard<std::mutex> lock1(m_groundSteeringAngleMutex);
     std::lock_guard<std::mutex> lock2(m_pedalPositionMutex);
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedMutex);
-    wheelSpeedCopy = m_wheelSpeed;
+    std::lock_guard<std::mutex> lock3(m_wheelSpeedLeftMutex); //Added this
+    std::lock_guard<std::mutex> lock3(m_wheelSpeedRightMutex); //Added this
+    wheelSpeedLeftCopy = m_wheelSpeedLeft; //Added this
+    wheelSpeedRightCopy = m_wheelSpeedRight; //Added this
     groundSteeringAngleCopy = m_groundSteeringAngle;
     pedalPositionCopy = m_pedalPosition;
   }
@@ -79,19 +89,20 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
 
   // TODO : Write kinematics and use wheelSpeedCopy for the calculations
   double R = 0.12;
+  vL = wheelSpeedLeftCopy;
+  vR = wheelSpeedRightCopy;
   // TODO: Kinematics for yawRate
   fi = -((vL-vR)/(2*R))
+  m_fi += fi*dt;
   // TODO: Kinematics for vx
   vx = (vL+vR)/2*cos(m_fi);
+  m_vx += vx*dt;
   // TODO: Kinematics for vy
   vy = (vL+vR)/2*sin(m_fi);
-  
-  m_fi += fi*dt;
-  m_vx += vx*dt;
   m_vy += vy*dt;
 
 
-  m_longitudinalSpeed = pedalPositionCopy * pedalSpeedGain;
+/*   m_longitudinalSpeed = pedalPositionCopy * pedalSpeedGain;
 
   if (std::abs(m_longitudinalSpeed) > 0.01f) {
     double const slipAngleFront = groundSteeringAngleCopy 
@@ -113,7 +124,7 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
   } else {
     m_lateralSpeed = 0.0f;
     m_yawRate = 0.0f;
-  }
+  } */
 
   // TODO: Make the calculated wheelspeed part of kinematicState? vx and vy?
   opendlv::sim::KinematicState kinematicState;

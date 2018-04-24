@@ -87,7 +87,8 @@ int32_t main(int32_t argc, char **argv) {
         behavior.step();
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
-        //auto wheelSpeedRquest = behavior.getWheelSpeedRequest(); //Added this
+        auto wheelSpeedRquestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
+        auto wheelSpeedRquestRight = behavior.getWheelSpeedRequestRight(); //Added this
 
         //float leftWheelSpeedValue = 0.1f; //Added this
         //float rightWheelSpeedValue = 0.1f; //Added this

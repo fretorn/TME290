@@ -37,13 +37,23 @@ int32_t main(int32_t argc, char **argv) {
     SingleTrackModel singleTrackModel;
 
 
-    // Added auto for WheelSpeedRequest
-    auto onWheelSpeedRequest{[&FRAME_ID, &singleTrackModel](cluon::data::Envelope &&envelope)
+    // Added this
+    auto onWheelSpeedRequestLeft{[&FRAME_ID, &singleTrackModel](cluon::data::Envelope &&envelope)
       {
         uint32_t const senderStamp = envelope.senderStamp();
         if (FRAME_ID == senderStamp) {
-          auto wheelSpeedRequest = cluon::extractMessage<opendlv::proxy::WheelSpeedRequest>(std::move(envelope));
-          singleTrackModel.setWheelSpeed(wheelSpeedRequest);
+          auto wheelSpeedRequestLeft = cluon::extractMessage<opendlv::proxy::WheelSpeedRequest>(std::move(envelope));
+          singleTrackModel.setWheelSpeedLeft(wheelSpeedRequestLeft);
+        }
+      }};
+
+    // Added this
+    auto onWheelSpeedRequestRight{[&FRAME_ID, &singleTrackModel](cluon::data::Envelope &&envelope)
+      {
+        uint32_t const senderStamp = envelope.senderStamp();
+        if (FRAME_ID == senderStamp) {
+          auto wheelSpeedRequestRight = cluon::extractMessage<opendlv::proxy::WheelSpeedRequest>(std::move(envelope));
+          singleTrackModel.setWheelSpeedRight(wheelSpeedRequestRight);
         }
       }};
     
@@ -67,8 +77,8 @@ int32_t main(int32_t argc, char **argv) {
     cluon::OD4Session od4{CID};
     od4.dataTrigger(opendlv::proxy::GroundSteeringRequest::ID(), onGroundSteeringRequest);
     od4.dataTrigger(opendlv::proxy::PedalPositionRequest::ID(), onPedalPositionRequest);
-    od4.dataTrigger(opendlv::proxy::WheelSpeedRequest::ID(), onWheelSpeedRequest);
-    // Added od4.dataTrigger for WheelSpeedRequest
+    od4.dataTrigger(opendlv::proxy::WheelSpeedRequest::ID(), onWheelSpeedRequestLeft); //Added this
+    od4.dataTrigger(opendlv::proxy::WheelSpeedRequest::ID(), onWheelSpeedRequestRight); //Added this
 
     auto atFrequency{[&FRAME_ID, &VERBOSE, &DT, &singleTrackModel, &od4]() -> bool
       {

@@ -24,14 +24,16 @@ Behavior::Behavior() noexcept:
   m_rightIrReading{},
   m_groundSteeringAngleRequest{},
   m_pedalPositionRequest{},
-  m_wheelSpeedRequest{}, //Added this
+  m_wheelSpeedRequestLeft{}, //Added this
+  m_wheelSpeedRequestRight{}, //Added this
   m_frontUltrasonicReadingMutex{},
   m_rearUltrasonicReadingMutex{},
   m_leftIrReadingMutex{},
   m_rightIrReadingMutex{},
   m_groundSteeringAngleRequestMutex{},
   m_pedalPositionRequestMutex{},
-  m_wheelSpeedRequestMutex{} //Added this
+  m_wheelSpeedRequestLeftMutex{}, //Added this
+  m_wheelSpeedRequestRightMutex{} //Added this
 {
 }
 
@@ -48,10 +50,16 @@ opendlv::proxy::PedalPositionRequest Behavior::getPedalPositionRequest() noexcep
 }
 
 //Added this
-opendlv::proxy::WheelSpeedRequest Behavior::getWheelSpeedRequest() noexcept
+opendlv::proxy::WheelSpeedRequest Behavior::getWheelSpeedRequestLeft() noexcept
 {
-  std::lock_guard<std::mutex> lock(m_wheelSpeedRequestMutex);
-  return m_wheelSpeedRequest;
+  std::lock_guard<std::mutex> lock(m_wheelSpeedRequestLeftMutex);
+  return m_wheelSpeedRequestLeft;
+}
+//Added this
+opendlv::proxy::WheelSpeedRequest Behavior::getWheelSpeedRequestRight() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_wheelSpeedRequestRightMutex);
+  return m_wheelSpeedRequestRight;
 }
 
 void Behavior::setFrontUltrasonic(opendlv::proxy::DistanceReading const &frontUltrasonicReading) noexcept
@@ -104,7 +112,8 @@ void Behavior::step() noexcept
 
   float pedalPosition = 0.8f;
   float groundSteeringAngle = 0.3f;
-  float wheelSpeed = 0.0f; //Added this
+  float wheelSpeedLeft = 0.0f; //Added this
+  float wheelSpeedRight = 0.0f; //Added this
 
   // TODO: I think there should be some more logic here. Maybe to control both wheelSpeed 0 and 1?
 
@@ -129,7 +138,8 @@ void Behavior::step() noexcept
   {
     std::lock_guard<std::mutex> lock1(m_groundSteeringAngleRequestMutex);
     std::lock_guard<std::mutex> lock2(m_pedalPositionRequestMutex);
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedRequestMutex); //Added this
+    std::lock_guard<std::mutex> lock3(m_wheelSpeedRequestLeftMutex); //Added this
+    std::lock_guard<std::mutex> lock4(m_wheelSpeedRequestRightMutex); //Added this
 
     opendlv::proxy::GroundSteeringRequest groundSteeringAngleRequest;
     groundSteeringAngleRequest.groundSteering(groundSteeringAngle);
@@ -140,9 +150,13 @@ void Behavior::step() noexcept
     m_pedalPositionRequest = pedalPositionRequest;
 
     //Added this
-    opendlv::proxy::WheelSpeedRequest wheelSpeedRequest;
-    wheelSpeedRequest.wheelSpeed(wheelSpeed);
-    m_wheelSpeedRequest = wheelSpeedRequest;
+    opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
+    wheelSpeedRequestLeft.wheelSpeed(wheelSpeed);
+    m_wheelSpeedRequestLeft = wheelSpeedRequestLeft;
+    //Added this
+    opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
+    wheelSpeedRequestRight.wheelSpeed(wheelSpeed);
+    m_wheelSpeedRequestRight = wheelSpeedRequestRight;
   }
 }
 
