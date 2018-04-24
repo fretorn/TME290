@@ -34,16 +34,7 @@ int32_t main(int32_t argc, char **argv) {
 
     Behavior behavior;
 
-    auto onDistanceReading{[&behavior](cluon::data::Envelope &&envelope)
-      {
-        auto distanceReading = cluon::extractMessage<opendlv::proxy::DistanceReading>(std::move(envelope));
-        uint32_t const senderStamp = envelope.senderStamp();
-        if (senderStamp == 0) {
-          behavior.setFrontUltrasonic(distanceReading);
-        } else {
-          behavior.setRearUltrasonic(distanceReading);
-        }
-      }};
+   /*  //Added this
     auto onVoltageReading{[&behavior](cluon::data::Envelope &&envelope)
       {
         auto voltageReading = cluon::extractMessage<opendlv::proxy::VoltageReading>(std::move(envelope));
@@ -57,7 +48,7 @@ int32_t main(int32_t argc, char **argv) {
 
     cluon::OD4Session od4{CID};
     od4.dataTrigger(opendlv::proxy::DistanceReading::ID(), onDistanceReading);
-    od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
+    od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading); */
 
 
     double globalTime = 0.0; //Added this

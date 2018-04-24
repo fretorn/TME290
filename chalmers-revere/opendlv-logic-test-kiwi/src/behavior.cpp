@@ -18,16 +18,8 @@
 #include "behavior.hpp"
 
 Behavior::Behavior() noexcept:
-  m_frontUltrasonicReading{},
-  m_rearUltrasonicReading{},
-  m_leftIrReading{},
-  m_rightIrReading{},
   m_wheelSpeedRequestLeft{}, //Added this
   m_wheelSpeedRequestRight{}, //Added this
-  m_frontUltrasonicReadingMutex{},
-  m_rearUltrasonicReadingMutex{},
-  m_leftIrReadingMutex{},
-  m_rightIrReadingMutex{},
   m_wheelSpeedRequestLeftMutex{}, //Added this
   m_wheelSpeedRequestRightMutex{} //Added this
 {
@@ -46,62 +38,16 @@ opendlv::proxy::WheelSpeedRequest Behavior::getWheelSpeedRequestRight() noexcept
   return m_wheelSpeedRequestRight;
 }
 
-void Behavior::setFrontUltrasonic(opendlv::proxy::DistanceReading const &frontUltrasonicReading) noexcept
-{
-  std::lock_guard<std::mutex> lock(m_frontUltrasonicReadingMutex);
-  m_frontUltrasonicReading = frontUltrasonicReading;
-}
-
-void Behavior::setRearUltrasonic(opendlv::proxy::DistanceReading const &rearUltrasonicReading) noexcept
-{
-  std::lock_guard<std::mutex> lock(m_rearUltrasonicReadingMutex);
-  m_rearUltrasonicReading = rearUltrasonicReading;
-}
-
-void Behavior::setLeftIr(opendlv::proxy::VoltageReading const &leftIrReading) noexcept
-{
-  std::lock_guard<std::mutex> lock(m_leftIrReadingMutex);
-  m_leftIrReading = leftIrReading;
-}
-
-void Behavior::setRightIr(opendlv::proxy::VoltageReading const &rightIrReading) noexcept
-{
-  std::lock_guard<std::mutex> lock(m_rightIrReadingMutex);
-  m_rightIrReading = rightIrReading;
-}
-
-
 void Behavior::step() noexcept
 {
-  opendlv::proxy::DistanceReading frontUltrasonicReading;
-  opendlv::proxy::DistanceReading rearUltrasonicReading;
-  opendlv::proxy::VoltageReading leftIrReading;
-  opendlv::proxy::VoltageReading rightIrReading;
   {
-    std::lock_guard<std::mutex> lock1(m_frontUltrasonicReadingMutex);
-    std::lock_guard<std::mutex> lock2(m_rearUltrasonicReadingMutex);
-    std::lock_guard<std::mutex> lock3(m_leftIrReadingMutex);
-    std::lock_guard<std::mutex> lock4(m_rightIrReadingMutex);
-
-    frontUltrasonicReading = m_frontUltrasonicReading;
-    rearUltrasonicReading = m_rearUltrasonicReading;
-    leftIrReading = m_leftIrReading;
-    rightIrReading = m_rightIrReading;
   }
-
-  float frontDistance = frontUltrasonicReading.distance();
-  float rearDistance = rearUltrasonicReading.distance();
-  double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
-  double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
-
   float wheelSpeedLeft = 0.0f; //Added this
   float wheelSpeedRight = 0.0f; //Added this
 
-  // TODO: I think there should be some more logic here. Maybe to control both wheelSpeed 0 and 1?
-
   {
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedRequestLeftMutex); //Added this
-    std::lock_guard<std::mutex> lock4(m_wheelSpeedRequestRightMutex); //Added this
+    std::lock_guard<std::mutex> lock1(m_wheelSpeedRequestLeftMutex); //Added this
+    std::lock_guard<std::mutex> lock2(m_wheelSpeedRequestRightMutex); //Added this
 
     //Added this
     opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
@@ -112,15 +58,4 @@ void Behavior::step() noexcept
     wheelSpeedRequestRight.wheelSpeed(wheelSpeedRight);
     m_wheelSpeedRequestRight = wheelSpeedRequestRight;
   }
-}
-
-// TODO: This is a rough estimate, improve by looking into the sensor specifications.
-double Behavior::convertIrVoltageToDistance(float voltage) const noexcept
-{
-  double voltageDividerR1 = 1000.0;
-  double voltageDividerR2 = 1000.0;
-
-  double sensorVoltage = (voltageDividerR1 + voltageDividerR2) / voltageDividerR2 * voltage;
-  double distance = (2.5 - sensorVoltage) / 0.07;
-  return distance;
 }

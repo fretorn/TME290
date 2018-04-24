@@ -36,26 +36,11 @@ class Behavior {
  public:
   opendlv::proxy::WheelSpeedRequest getWheelSpeedRequestLeft() noexcept; //Added this
   opendlv::proxy::WheelSpeedRequest getWheelSpeedRequestRight() noexcept; //Added this
-  void setFrontUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
-  void setRearUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
-  void setLeftIr(opendlv::proxy::VoltageReading const &) noexcept;
-  void setRightIr(opendlv::proxy::VoltageReading const &) noexcept;
   void step() noexcept;
 
  private:
-  double convertIrVoltageToDistance(float) const noexcept;
-
- private:
-  opendlv::proxy::DistanceReading m_frontUltrasonicReading;
-  opendlv::proxy::DistanceReading m_rearUltrasonicReading;
-  opendlv::proxy::VoltageReading m_leftIrReading;
-  opendlv::proxy::VoltageReading m_rightIrReading;
   opendlv::proxy::WheelSpeedRequest m_wheelSpeedRequestLeft; //Added this
   opendlv::proxy::WheelSpeedRequest m_wheelSpeedRequestRight; //Added this
-  std::mutex m_frontUltrasonicReadingMutex;
-  std::mutex m_rearUltrasonicReadingMutex;
-  std::mutex m_leftIrReadingMutex;
-  std::mutex m_rightIrReadingMutex;
   std::mutex m_wheelSpeedRequestLeftMutex; //Added this
   std::mutex m_wheelSpeedRequestRightMutex; //Added this
 };
