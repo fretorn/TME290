@@ -1,9 +1,0 @@
-[submodule "chalmers-revere/opendlv-logic-test-kiwi"]
-	path = chalmers-revere/opendlv-logic-test-kiwi
-	url = https://github.com/chalmers-revere/opendlv-logic-test-kiwi.git
-[submodule "chalmers-revere/opendlv-sim-motor-kiwi"]
-	path = chalmers-revere/opendlv-sim-motor-kiwi
-	url = https://github.com/chalmers-revere/opendlv-sim-motor-kiwi.git
-[submodule "chalmers-revere/--force"]
-	path = chalmers-revere/--force
-	url = https://github.com/chalmers-revere/opendlv-logic-test-kiwi.git
