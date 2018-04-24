@@ -60,33 +60,29 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
 
+    double globalTime = 0.0; //Added this
+    double dt = 1.0/FREQ; //Added this
 
-    auto atFrequency{[&VERBOSE, &behavior, &od4]() -> bool
+    auto atFrequency{[&VERBOSE, &behavior, &od4, &globalTime, &dt]() -> bool
       {
         float vL = 0.0f;
         float vR = 0.0f;
-        //double R = 0.12; //[m] Radius of robot
         float v0 = 0.5f; //[m/s] Initial speed
         float t1 = 3.0f; //[s]
         float t2 = 10.0f; //[s]
-        float dt = 0.01f; //[s]
-        float t = 0.0f; //[s] Current time
-        t += dt; 
         
         //Conditions for wheel speed
-        if (t <= t1) {
+        if (globalTime <= t1) {
           vL = 0;
-          vR = v0*(t/t1);
+          vR = v0*(globalTime/t1);
         } else {
-          if (t <= t2) {
-            vL = v0*((t-t1)/t2);
+          if (globalTime <= t2) {
+            vL = v0*((globalTime-t1)/t2);
             vR = v0;
           }
         }
 
         behavior.step();
-        auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
-        auto pedalPositionRequest = behavior.getPedalPositionRequest();
         auto wheelSpeedRquestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
         auto wheelSpeedRquestRight = behavior.getWheelSpeedRequestRight(); //Added this
 
@@ -100,18 +96,15 @@ int32_t main(int32_t argc, char **argv) {
         wheelSpeedRequestRight.wheelSpeed(vR);
 
         cluon::data::TimeStamp sampleTime;
-        od4.send(groundSteeringAngleRequest, sampleTime, 0);
-        od4.send(pedalPositionRequest, sampleTime, 0);
         od4.send(wheelSpeedRequestLeft, sampleTime, 0); //Added this
         od4.send(wheelSpeedRequestRight, sampleTime, 1); //Added this
-        //od4.send(wheelSpeedRequest, sampleTime, 0); //Added this
         if (VERBOSE) {
-          std::cout << "Ground steering angle is " << groundSteeringAngleRequest.groundSteering()
-            << " and pedal position is " << pedalPositionRequest.position()
+          std::cout 
             << "aaaand wheel speed left is " << wheelSpeedRequestLeft.wheelSpeed()
             << "aaaand wheel speed right is " << wheelSpeedRequestRight.wheelSpeed() << std::endl; //Added this
         }
 
+        globalTime += dt; //Added this 
         return true;
       }};
 
