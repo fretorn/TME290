@@ -59,8 +59,28 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::DistanceReading::ID(), onDistanceReading);
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
+
+
     auto atFrequency{[&VERBOSE, &behavior, &od4]() -> bool
       {
+        double R = 0.12; //[m] Radius of robot
+        double v0 = 0.5; //[m/s] Initial speed
+        double t1 = 3; //[s]
+        double t2 = 10; //[s]
+        double dt = 0.01; //[s]
+        double t += dt; //[s] Current time
+        
+        //Conditions for wheel speed
+        if (t <= t1) {
+          vL = 0;
+          vR = v0*(t/t1);
+        } else {
+          if (t <= t2) {
+            vL = v0*((t-t1)/t2);
+            vR = v0;
+          }
+        }
+
         behavior.step();
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
@@ -71,15 +91,15 @@ int32_t main(int32_t argc, char **argv) {
 
         //Added this
         opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
-        wheelSpeedRequestLeft.wheelSpeed(leftWheelSpeedValue);
+        wheelSpeedRequestLeft.wheelSpeed(vL);
         opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
-        wheelSpeedRequestRight.wheelSpeed(rightWheelSpeedValue);
+        wheelSpeedRequestRight.wheelSpeed(vR);
 
         cluon::data::TimeStamp sampleTime;
         od4.send(groundSteeringAngleRequest, sampleTime, 0);
         od4.send(pedalPositionRequest, sampleTime, 0);
         od4.send(wheelSpeedRequestLeft, sampleTime, 0); //Added this
-        od4.send(wheelSpeedRequestRight, sampleTime, 0); //Added this
+        od4.send(wheelSpeedRequestRight, sampleTime, 1); //Added this
         //od4.send(wheelSpeedRequest, sampleTime, 0); //Added this
         if (VERBOSE) {
           std::cout << "Ground steering angle is " << groundSteeringAngleRequest.groundSteering()

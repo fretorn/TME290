@@ -78,7 +78,18 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
 
 
   // TODO : Write kinematics and use wheelSpeedCopy for the calculations
+  double R = 0.12;
+  // TODO: Kinematics for yawRate
+  fi = -((vL-vR)/(2*R))
+  // TODO: Kinematics for vx
+  vx = (vL+vR)/2*cos(m_fi);
+  // TODO: Kinematics for vy
+  vy = (vL+vR)/2*sin(m_fi);
   
+  m_fi += fi*dt;
+  m_vx += vx*dt;
+  m_vy += vy*dt;
+
 
   m_longitudinalSpeed = pedalPositionCopy * pedalSpeedGain;
 
@@ -106,9 +117,12 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
 
   // TODO: Make the calculated wheelspeed part of kinematicState? vx and vy?
   opendlv::sim::KinematicState kinematicState;
-  kinematicState.vx(static_cast<float>(m_longitudinalSpeed));
-  kinematicState.vy(static_cast<float>(m_lateralSpeed));
-  kinematicState.yawRate(static_cast<float>(m_yawRate));
+  //kinematicState.vx(static_cast<float>(m_longitudinalSpeed));
+  //kinematicState.vy(static_cast<float>(m_lateralSpeed));
+  //kinematicState.yawRate(static_cast<float>(m_yawRate));
+  kinematicState.vx(static_cast<float>(m_vx));
+  kinematicState.vy(static_cast<float>(m_vy));
+  kinematicState.yawRate(static_cast<float>(m_fi)); //Added this
 
   return kinematicState;
 }
