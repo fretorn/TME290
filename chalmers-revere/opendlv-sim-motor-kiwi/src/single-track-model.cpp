@@ -21,16 +21,17 @@
 #include "single-track-model.hpp"
 
 SingleTrackModel::SingleTrackModel() noexcept:
-  m_wheelSpeedMutex{},
   m_groundSteeringAngleMutex{},
   m_pedalPositionMutex{},
+  m_wheelSpeedLeftMutex{}, //Added this
+  m_wheelSpeedRightMutex{}, //Added this
   m_longitudinalSpeed{0.0f},
   m_lateralSpeed{0.0f},
   m_yawRate{0.0f},
-  m_wheelSpeedLeft{0.0f}, //Added this
-  m_wheelSpeedRight{0.0f}, //Added this
   m_groundSteeringAngle{0.0f},
-  m_pedalPosition{0.0f}
+  m_pedalPosition{0.0f},
+  m_wheelSpeedLeft{}, //Added this
+  m_wheelSpeedRight{} //Added this
 {
 }
 
@@ -62,43 +63,57 @@ void SingleTrackModel::setPedalPosition(opendlv::proxy::PedalPositionRequest con
 
 opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
 {
-  double const pedalSpeedGain{0.5};
+  // double const pedalSpeedGain{0.5};
 
-  double const mass{1.0};
+/*   double const mass{1.0};
   double const momentOfInertiaZ{0.1};
   double const length{0.22};
   double const frontToCog{0.11};
   double const rearToCog{length - frontToCog};
   double const corneringStiffnessFront{1.0};
-  double const corneringStiffnessRear{1.0};
+  double const corneringStiffnessRear{1.0}; */
   
-  float groundSteeringAngleCopy;
-  float pedalPositionCopy;
+  float wheelSpeedLeftCopy;
+  float wheelSpeedRightCopy;
+  //float groundSteeringAngleCopy;
+  //float pedalPositionCopy;
   {
     
-    std::lock_guard<std::mutex> lock1(m_groundSteeringAngleMutex);
-    std::lock_guard<std::mutex> lock2(m_pedalPositionMutex);
+    //std::lock_guard<std::mutex> lock1(m_groundSteeringAngleMutex);
+    //std::lock_guard<std::mutex> lock2(m_pedalPositionMutex);
     std::lock_guard<std::mutex> lock3(m_wheelSpeedLeftMutex); //Added this
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedRightMutex); //Added this
+    std::lock_guard<std::mutex> lock4(m_wheelSpeedRightMutex); //Added this
     wheelSpeedLeftCopy = m_wheelSpeedLeft; //Added this
     wheelSpeedRightCopy = m_wheelSpeedRight; //Added this
-    groundSteeringAngleCopy = m_groundSteeringAngle;
-    pedalPositionCopy = m_pedalPosition;
+    //groundSteeringAngleCopy = m_groundSteeringAngle;
+    //pedalPositionCopy = m_pedalPosition;
   }
 
 
   // TODO : Write kinematics and use wheelSpeedCopy for the calculations
+/*   float R = 0.12f;
+  float m_fi = 0.0f;
+  float m_vx = 0.0f;
+  float m_vy = 0.0f;
+  float fi = 0.0f;
+  float vx = 0.0f;
+  float vy = 0.0f; */
   double R = 0.12;
-  vL = wheelSpeedLeftCopy;
-  vR = wheelSpeedRightCopy;
+  double m_fi = 0.0;
+  double m_vx = 0.0;
+  double m_vy = 0.0;
+  double fi = 0.0;
+  double vx = 0.0;
+  double vy = 0.0;
+
   // TODO: Kinematics for yawRate
-  fi = -((vL-vR)/(2*R))
+  fi = -((wheelSpeedLeftCopy-wheelSpeedRightCopy)/(2*R));
   m_fi += fi*dt;
   // TODO: Kinematics for vx
-  vx = (vL+vR)/2*cos(m_fi);
+  vx = (wheelSpeedLeftCopy+wheelSpeedRightCopy)/2*cos(m_fi);
   m_vx += vx*dt;
   // TODO: Kinematics for vy
-  vy = (vL+vR)/2*sin(m_fi);
+  vy = (wheelSpeedLeftCopy+wheelSpeedRightCopy)/2*sin(m_fi);
   m_vy += vy*dt;
 
 

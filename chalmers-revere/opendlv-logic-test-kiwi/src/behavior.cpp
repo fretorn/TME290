@@ -151,11 +151,11 @@ void Behavior::step() noexcept
 
     //Added this
     opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
-    wheelSpeedRequestLeft.wheelSpeed(wheelSpeed);
+    wheelSpeedRequestLeft.wheelSpeed(wheelSpeedLeft);
     m_wheelSpeedRequestLeft = wheelSpeedRequestLeft;
     //Added this
     opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
-    wheelSpeedRequestRight.wheelSpeed(wheelSpeed);
+    wheelSpeedRequestRight.wheelSpeed(wheelSpeedRight);
     m_wheelSpeedRequestRight = wheelSpeedRequestRight;
   }
 }
