@@ -41,6 +41,9 @@ class SingleTrackModel {
  private:
   std::mutex m_wheelSpeedLeftMutex; //Added this
   std::mutex m_wheelSpeedRightMutex; //Added this
+  double m_longitudinalSpeed;
+  double m_lateralSpeed;
+  double m_yawRate;
   float m_wheelSpeedLeft; //Added this
   float m_wheelSpeedRight; //Added this
 };

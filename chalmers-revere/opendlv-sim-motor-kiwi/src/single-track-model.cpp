@@ -23,6 +23,9 @@
 SingleTrackModel::SingleTrackModel() noexcept:
   m_wheelSpeedLeftMutex{}, //Added this
   m_wheelSpeedRightMutex{}, //Added this
+  m_longitudinalSpeed{0.0f},
+  m_lateralSpeed{0.0f},
+  m_yawRate{0.0f},
   m_wheelSpeedLeft{}, //Added this
   m_wheelSpeedRight{} //Added this
 {
