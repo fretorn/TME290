@@ -82,10 +82,6 @@ int32_t main(int32_t argc, char **argv) {
           }
         }
 
-        // TODO: Test variables!
-        vL = 20.0f;
-        vR = 20.0f;
-
         behavior.step();
         auto wheelSpeedRquestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
         auto wheelSpeedRquestRight = behavior.getWheelSpeedRequestRight(); //Added this
