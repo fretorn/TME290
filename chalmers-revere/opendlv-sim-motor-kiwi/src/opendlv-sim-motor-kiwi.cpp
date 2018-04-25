@@ -38,20 +38,20 @@ int32_t main(int32_t argc, char **argv) {
 
 
     // Added this
-    auto onWheelSpeedRequestLeft{[&FRAME_ID, &singleTrackModel](cluon::data::Envelope &&envelope)
+    auto onWheelSpeedRequestLeft{[&singleTrackModel](cluon::data::Envelope &&envelope)
       {
         uint32_t const senderStamp = envelope.senderStamp();
-        if (FRAME_ID == senderStamp) {
+        if (0 == senderStamp) {
           auto wheelSpeedRequestLeft = cluon::extractMessage<opendlv::proxy::WheelSpeedRequest>(std::move(envelope));
           singleTrackModel.setWheelSpeedLeft(wheelSpeedRequestLeft);
         }
       }};
 
     // Added this
-    auto onWheelSpeedRequestRight{[&FRAME_ID, &singleTrackModel](cluon::data::Envelope &&envelope)
+    auto onWheelSpeedRequestRight{[&singleTrackModel](cluon::data::Envelope &&envelope)
       {
         uint32_t const senderStamp = envelope.senderStamp();
-        if (FRAME_ID == senderStamp) {
+        if (1 == senderStamp) {
           auto wheelSpeedRequestRight = cluon::extractMessage<opendlv::proxy::WheelSpeedRequest>(std::move(envelope));
           singleTrackModel.setWheelSpeedRight(wheelSpeedRequestRight);
         }
