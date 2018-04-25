@@ -76,29 +76,22 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
     wheelSpeedRightCopy = m_wheelSpeedRight; //Added this
   }
 
-  // TODO: Should I initialize these without value??
   //Added this
-  double R = 0.12;
+  double R = 0.12*dt/dt;
   double fi = 0.0;
-  double vx = 0.0;
-  double vy = 0.0;
 
   //Kinematics for yawRate
-  fi = -((wheelSpeedLeftCopy-wheelSpeedRightCopy)/(2*R));
-  m_fi += fi*dt;
-  //Kinematics for vx
-  vx = (wheelSpeedLeftCopy+wheelSpeedRightCopy)/2*cos(m_fi);
-  m_vx += vx*dt;
-  //Kinematics for vy
-  vy = (wheelSpeedLeftCopy+wheelSpeedRightCopy)/2*sin(m_fi);
-  m_vy += vy*dt;
+  fi = -( (wheelSpeedLeftCopy - wheelSpeedRightCopy) / (2 * R) );
+
+  m_vx = m_vx + wheelSpeedLeftCopy * dt;
+  m_vy = m_vy + wheelSpeedRightCopy * dt;
 
   opendlv::sim::KinematicState kinematicState;
 
   //Added this
   kinematicState.vx(static_cast<float>(m_vx));
   kinematicState.vy(static_cast<float>(m_vy));
-  kinematicState.yawRate(static_cast<float>(m_fi)); 
+  kinematicState.yawRate(static_cast<float>(fi)); 
 
   return kinematicState;
 }

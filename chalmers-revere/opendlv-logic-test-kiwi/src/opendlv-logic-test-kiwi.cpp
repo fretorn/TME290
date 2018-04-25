@@ -65,8 +65,8 @@ int32_t main(int32_t argc, char **argv) {
 
     auto atFrequency{[&VERBOSE, &behavior, &od4, &globalTime, &dt]() -> bool
       {
-        float vL = 1.0f;
-        float vR = 1.0f;
+        float vL = 0.0f;
+        float vR = 0.0f;
         float v0 = 0.5f; //[m/s] Initial speed
         float t1 = 3.0f; //[s]
         float t2 = 10.0f; //[s]
@@ -74,10 +74,10 @@ int32_t main(int32_t argc, char **argv) {
         //Conditions for wheel speed
         if (globalTime <= t1) {
           vL = 0.0f;
-          vR = v0*(globalTime/t1);
+          vR = v0 * globalTime / t1;
         } else {
           if (globalTime <= t2) {
-            vL = v0*((globalTime-t1)/t2);
+            vL = v0 * (globalTime-t1) / t2;
             vR = v0;
           }
         }
@@ -85,9 +85,6 @@ int32_t main(int32_t argc, char **argv) {
         behavior.step();
         auto wheelSpeedRquestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
         auto wheelSpeedRquestRight = behavior.getWheelSpeedRequestRight(); //Added this
-
-        //float leftWheelSpeedValue = 0.1f; //Added this
-        //float rightWheelSpeedValue = 0.1f; //Added this
 
         //Added this
         opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
