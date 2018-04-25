@@ -83,13 +83,11 @@ int32_t main(int32_t argc, char **argv) {
         }
 
         behavior.step();
-        auto wheelSpeedRquestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
-        auto wheelSpeedRquestRight = behavior.getWheelSpeedRequestRight(); //Added this
+        auto wheelSpeedRequestLeft = behavior.getWheelSpeedRequestLeft(); //Added this
+        auto wheelSpeedRequestRight = behavior.getWheelSpeedRequestRight(); //Added this
 
         //Added this
-        opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;
         wheelSpeedRequestLeft.wheelSpeed(vL);
-        opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
         wheelSpeedRequestRight.wheelSpeed(vR);
 
         //Broadcast the WheelSpeedRequest
