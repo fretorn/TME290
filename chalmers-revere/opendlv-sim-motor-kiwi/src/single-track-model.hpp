@@ -34,16 +34,22 @@ class SingleTrackModel {
   ~SingleTrackModel() = default;
 
  public:
+  void setGroundSteeringAngle(opendlv::proxy::GroundSteeringRequest const &) noexcept;
+  void setPedalPosition(opendlv::proxy::PedalPositionRequest const &) noexcept;
   void setWheelSpeedLeft(opendlv::proxy::WheelSpeedRequest const &) noexcept; //Added this
   void setWheelSpeedRight(opendlv::proxy::WheelSpeedRequest const &) noexcept; //Added this
   opendlv::sim::KinematicState step(double) noexcept;
 
  private:
+  std::mutex m_groundSteeringAngleMutex;
+  std::mutex m_pedalPositionMutex;
   std::mutex m_wheelSpeedLeftMutex; //Added this
   std::mutex m_wheelSpeedRightMutex; //Added this
   double m_longitudinalSpeed;
   double m_lateralSpeed;
   double m_yawRate;
+  float m_groundSteeringAngle;
+  float m_pedalPosition;
   float m_wheelSpeedLeft; //Added this
   float m_wheelSpeedRight; //Added this
 };

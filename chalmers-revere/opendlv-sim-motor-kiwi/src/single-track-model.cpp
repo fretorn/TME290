@@ -21,14 +21,30 @@
 #include "single-track-model.hpp"
 
 SingleTrackModel::SingleTrackModel() noexcept:
+  m_groundSteeringAngleMutex{},
+  m_pedalPositionMutex{},
   m_wheelSpeedLeftMutex{}, //Added this
   m_wheelSpeedRightMutex{}, //Added this
   m_longitudinalSpeed{0.0f},
   m_lateralSpeed{0.0f},
   m_yawRate{0.0f},
+  m_groundSteeringAngle{0.0f},
+  m_pedalPosition{0.0f},
   m_wheelSpeedLeft{}, //Added this
   m_wheelSpeedRight{} //Added this
 {
+}
+
+void SingleTrackModel::setGroundSteeringAngle(opendlv::proxy::GroundSteeringRequest const &groundSteeringAngle) noexcept
+{
+  std::lock_guard<std::mutex> lock(m_groundSteeringAngleMutex);
+  m_groundSteeringAngle = groundSteeringAngle.groundSteering();
+}
+
+void SingleTrackModel::setPedalPosition(opendlv::proxy::PedalPositionRequest const &pedalPosition) noexcept
+{
+  std::lock_guard<std::mutex> lock(m_pedalPositionMutex);
+  m_pedalPosition = pedalPosition.position();
 }
 
 //Added this

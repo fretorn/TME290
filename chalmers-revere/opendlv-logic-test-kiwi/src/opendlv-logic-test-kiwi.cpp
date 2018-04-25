@@ -60,8 +60,8 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
 
-    double globalTime = 0.0; //Added this
-    double dt = 1.0/FREQ; //Added this
+    float globalTime = 0.0f; //Added this
+    float dt = 1.0f/FREQ; //Added this
 
     auto atFrequency{[&VERBOSE, &behavior, &od4, &globalTime, &dt]() -> bool
       {

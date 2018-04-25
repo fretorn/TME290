@@ -22,15 +22,31 @@ Behavior::Behavior() noexcept:
   m_rearUltrasonicReading{},
   m_leftIrReading{},
   m_rightIrReading{},
+  m_groundSteeringAngleRequest{},
+  m_pedalPositionRequest{},
   m_wheelSpeedRequestLeft{}, //Added this
   m_wheelSpeedRequestRight{}, //Added this
   m_frontUltrasonicReadingMutex{},
   m_rearUltrasonicReadingMutex{},
   m_leftIrReadingMutex{},
   m_rightIrReadingMutex{},
+  m_groundSteeringAngleRequestMutex{},
+  m_pedalPositionRequestMutex{},
   m_wheelSpeedRequestLeftMutex{}, //Added this
   m_wheelSpeedRequestRightMutex{} //Added this
 {
+}
+
+opendlv::proxy::GroundSteeringRequest Behavior::getGroundSteeringAngle() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_groundSteeringAngleRequestMutex);
+  return m_groundSteeringAngleRequest;
+}
+
+opendlv::proxy::PedalPositionRequest Behavior::getPedalPositionRequest() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_pedalPositionRequestMutex);
+  return m_pedalPositionRequest;
 }
 
 //Added this
@@ -89,11 +105,11 @@ void Behavior::step() noexcept
     rightIrReading = m_rightIrReading;
   }
 
-  float frontDistance = frontUltrasonicReading.distance();
+  /* float frontDistance = frontUltrasonicReading.distance();
   float rearDistance = rearUltrasonicReading.distance();
   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
   double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
-
+ */
   float wheelSpeedLeft = 0.0f; //Added this
   float wheelSpeedRight = 0.0f; //Added this
 
