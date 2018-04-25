@@ -4,12 +4,12 @@ services:
     sim-global:
         image: chalmersrevere/opendlv-sim-global-amd64:v0.0.5
         network_mode: "host"
-        command: "/usr/bin/opendlv-sim-global --cid=111 --freq=40 --frame-id=0 --x=0.0 --yaw=0.0"
+        command: "/usr/bin/opendlv-sim-global --cid=111 --freq=30 --frame-id=0 --x=0.0 --yaw=0.0"
 
     sim-motor-kiwi:
         image: fretorn/opendlv-sim-motor-kiwi-amd64:latest
         network_mode: "host"
-        command: "/usr/bin/opendlv-sim-motor-kiwi --cid=111 --freq=100 --frame-id=0"
+        command: "/usr/bin/opendlv-sim-motor-kiwi --cid=111 --freq=70 --frame-id=0"
 
     sim-ultrasonic-srf08-front:
         image: chalmersrevere/opendlv-sim-ultrasonic-srf08-amd64:v0.0.4
@@ -42,7 +42,7 @@ services:
     logic-test-kiwi:
         image: fretorn/opendlv-logic-test-kiwi-amd64:latest
         network_mode: "host"
-        command: "/usr/bin/opendlv-logic-test-kiwi --cid=111 --freq=40 --frame-id=0"
+        command: "/usr/bin/opendlv-logic-test-kiwi --cid=111 --freq=10 --frame-id=0"
 
     ui-default:
         image: chalmersrevere/opendlv-ui-default-amd64:v0.0.3

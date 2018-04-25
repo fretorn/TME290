@@ -67,12 +67,13 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
   float wheelSpeedRightCopy;
 
   {
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedLeftMutex); //Added this
-    std::lock_guard<std::mutex> lock4(m_wheelSpeedRightMutex); //Added this
+    std::lock_guard<std::mutex> lock1(m_wheelSpeedLeftMutex); //Added this
+    std::lock_guard<std::mutex> lock2(m_wheelSpeedRightMutex); //Added this
     wheelSpeedLeftCopy = m_wheelSpeedLeft; //Added this
     wheelSpeedRightCopy = m_wheelSpeedRight; //Added this
   }
 
+  // TODO: Should I initialize these without value??
   //Added this
   double R = 0.12;
   double m_fi = 0.0;

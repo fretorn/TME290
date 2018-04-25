@@ -110,14 +110,16 @@ void Behavior::step() noexcept
   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
   double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
  */
+
+  // TODO: Does this set wheelSpeed to zero??
   float wheelSpeedLeft = 0.0f; //Added this
   float wheelSpeedRight = 0.0f; //Added this
 
   // TODO: I think there should be some more logic here. Maybe to control both wheelSpeed 0 and 1?
 
   {
-    std::lock_guard<std::mutex> lock3(m_wheelSpeedRequestLeftMutex); //Added this
-    std::lock_guard<std::mutex> lock4(m_wheelSpeedRequestRightMutex); //Added this
+    std::lock_guard<std::mutex> lock1(m_wheelSpeedRequestLeftMutex); //Added this
+    std::lock_guard<std::mutex> lock2(m_wheelSpeedRequestRightMutex); //Added this
 
     //Added this
     opendlv::proxy::WheelSpeedRequest wheelSpeedRequestLeft;

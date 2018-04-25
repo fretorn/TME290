@@ -65,15 +65,15 @@ int32_t main(int32_t argc, char **argv) {
 
     auto atFrequency{[&VERBOSE, &behavior, &od4, &globalTime, &dt]() -> bool
       {
-        float vL = 0.0f;
-        float vR = 0.0f;
+        float vL = 1.0f;
+        float vR = 1.0f;
         float v0 = 0.5f; //[m/s] Initial speed
         float t1 = 3.0f; //[s]
         float t2 = 10.0f; //[s]
         
         //Conditions for wheel speed
         if (globalTime <= t1) {
-          vL = 0;
+          vL = 0.0f;
           vR = v0*(globalTime/t1);
         } else {
           if (globalTime <= t2) {
@@ -95,6 +95,7 @@ int32_t main(int32_t argc, char **argv) {
         opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
         wheelSpeedRequestRight.wheelSpeed(vR);
 
+        //Broadcast the WheelSpeedRequest
         cluon::data::TimeStamp sampleTime;
         od4.send(wheelSpeedRequestLeft, sampleTime, 0); //Added this
         od4.send(wheelSpeedRequestRight, sampleTime, 1); //Added this
@@ -104,7 +105,7 @@ int32_t main(int32_t argc, char **argv) {
             << "aaaand wheel speed right is " << wheelSpeedRequestRight.wheelSpeed() << std::endl; //Added this
         }
 
-        globalTime += dt; //Added this 
+        globalTime = globalTime + dt; //Added this 
         return true;
       }};
 
