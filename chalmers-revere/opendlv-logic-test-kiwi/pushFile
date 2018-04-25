@@ -1,0 +1,2 @@
+#!/bin/bash
+docker push fretorn/opendlv-logic-test-kiwi-amd64:latest
