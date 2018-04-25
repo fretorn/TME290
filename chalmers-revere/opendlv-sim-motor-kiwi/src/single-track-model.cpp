@@ -31,7 +31,10 @@ SingleTrackModel::SingleTrackModel() noexcept:
   m_groundSteeringAngle{0.0f},
   m_pedalPosition{0.0f},
   m_wheelSpeedLeft{}, //Added this
-  m_wheelSpeedRight{} //Added this
+  m_wheelSpeedRight{}, //Added this
+  m_fi{0.0f},
+  m_vx{0.0f},
+  m_vy{0.0f}
 {
 }
 
@@ -76,9 +79,9 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
   // TODO: Should I initialize these without value??
   //Added this
   double R = 0.12;
-  double m_fi = 0.0;
+/*   double m_fi = 0.0;
   double m_vx = 0.0;
-  double m_vy = 0.0;
+  double m_vy = 0.0; */
   double fi = 0.0;
   double vx = 0.0;
   double vy = 0.0;

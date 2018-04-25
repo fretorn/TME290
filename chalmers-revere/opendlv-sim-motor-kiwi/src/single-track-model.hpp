@@ -52,6 +52,9 @@ class SingleTrackModel {
   float m_pedalPosition;
   float m_wheelSpeedLeft; //Added this
   float m_wheelSpeedRight; //Added this
+  double m_fi;
+  double m_vx;
+  double m_vy;
 };
 
 #endif
