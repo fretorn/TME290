@@ -65,22 +65,9 @@ int32_t main(int32_t argc, char **argv) {
 
     auto atFrequency{[&VERBOSE, &behavior, &od4, &globalTime, &dt]() -> bool
       {
-        float vL = 0.0f;
-        float vR = 0.0f;
-        float v0 = 0.5f; //[m/s] Initial speed
-        float t1 = 3.0f; //[s]
-        float t2 = 10.0f; //[s]
-        
-        //Conditions for wheel speed
-        if (globalTime <= t1) {
-          vL = 0.0f;
-          vR = v0 * globalTime / t1;
-        } else {
-          if (globalTime <= t2) {
-            vL = v0 * (globalTime-t1) / t2;
-            vR = v0;
-          }
-        }
+        // TODO: test
+        float vL = 0.5f;
+        float vR = 0.5f;
 
         behavior.step();
         auto wheelSpeedRequestLeft = behavior.getWheelSpeedRequestLeft(); //Added this

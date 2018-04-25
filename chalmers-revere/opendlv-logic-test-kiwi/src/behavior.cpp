@@ -105,15 +105,36 @@ void Behavior::step() noexcept
     rightIrReading = m_rightIrReading;
   }
 
-  /* float frontDistance = frontUltrasonicReading.distance();
+
+  float frontDistance = frontUltrasonicReading.distance();
   float rearDistance = rearUltrasonicReading.distance();
-  double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
-  double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
- */
+/*   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
+  double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage()); */
+
 
   // TODO: Does this set wheelSpeed to zero??
-  float wheelSpeedLeft = 0.0f; //Added this
-  float wheelSpeedRight = 0.0f; //Added this
+  float wheelSpeedLeft = 0.5f; //Added this
+  float wheelSpeedRight = 0.5f; //Added this
+
+  if (frontDistance < 0.3f) {
+    wheelSpeedLeft = 0.0f;
+    wheelSpeedRight = 0.0f;
+  } else {
+    if (rearDistance < 0.2f) {
+      wheelSpeedLeft = 0.5f;
+      wheelSpeedRight = 0.5f;
+    }
+  }
+
+  /* if (leftDistance < rightDistance) {
+    if (leftDistance < 0.1f) {
+      wheelSpeedLeft = 0.5f;
+    }
+  } else {
+    if (rightDistance < 0.1f) {
+      wheelSpeedRight = 0.5f;
+    }
+  } */
 
   // TODO: I think there should be some more logic here. Maybe to control both wheelSpeed 0 and 1?
 
@@ -129,6 +150,7 @@ void Behavior::step() noexcept
     opendlv::proxy::WheelSpeedRequest wheelSpeedRequestRight;
     wheelSpeedRequestRight.wheelSpeed(wheelSpeedRight);
     m_wheelSpeedRequestRight = wheelSpeedRequestRight;
+
   }
 }
 

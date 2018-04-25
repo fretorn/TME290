@@ -81,17 +81,20 @@ opendlv::sim::KinematicState SingleTrackModel::step(double dt) noexcept
   double fi = 0.0;
 
   //Kinematics for yawRate
-  fi = -( (wheelSpeedLeftCopy - wheelSpeedRightCopy) / (2 * R) );
+  fi = -( (wheelSpeedLeftCopy - wheelSpeedRightCopy) / (2 * R) ) + 0.1;
 
-  m_vx = m_vx + wheelSpeedLeftCopy * dt;
-  m_vy = m_vy + wheelSpeedRightCopy * dt;
+/*   m_vx = m_vx + wheelSpeedLeftCopy * dt;
+  m_vy = m_vy + wheelSpeedRightCopy * dt; */
 
   opendlv::sim::KinematicState kinematicState;
 
   //Added this
-  kinematicState.vx(static_cast<float>(m_vx));
-  kinematicState.vy(static_cast<float>(m_vy));
+  kinematicState.vx(static_cast<float>(wheelSpeedLeftCopy));
+  kinematicState.vy(static_cast<float>(wheelSpeedRightCopy));
   kinematicState.yawRate(static_cast<float>(fi)); 
+/*   kinematicState.vx(static_cast<float>(m_vx));
+  kinematicState.vy(static_cast<float>(m_vy)); */
+  //kinematicState.yawRate(static_cast<float>(fi/fi)); 
 
   return kinematicState;
 }

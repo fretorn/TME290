@@ -1,0 +1,3 @@
+#!/bin/bash
+docker push fretorn/opendlv-sim-motor-kiwi-amd64:latest
+docker push fretorn/opendlv-logic-test-kiwi-amd64:latest
