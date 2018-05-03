@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/fredrik/mytest/project/opendlv-sim-motor-kiwi/
+docker build -f Dockerfile.amd64 -t fretorn/opendlv-sim-motor-kiwi-amd64:project .

@@ -1,0 +1,2 @@
+#!/bin/bash
+docker push fretorn/opendlv-sim-motor-kiwi-amd64:project
