@@ -16,6 +16,8 @@
  */
 
 #include "behavior.hpp"
+#include <cmath>
+using namespace std; //Added this
 
 Behavior::Behavior() noexcept:
   m_frontUltrasonicReading{},
@@ -69,6 +71,8 @@ void Behavior::setRightIr(opendlv::proxy::VoltageReading const &rightIrReading) 
   m_rightIrReading = rightIrReading;
 }
 
+//Added this
+
 
 void Behavior::step() noexcept
 {
@@ -93,10 +97,14 @@ void Behavior::step() noexcept
   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
   double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
 
-  float pedalPosition = 0.2f;
-  float groundSteeringAngle = 0.3f;
-  if (frontDistance < 0.3f) {
-    pedalPosition = 0.0f;
+  float pedalPosition = 0.7f;
+  float groundSteeringAngle = 0.0f;
+
+  string scenario = "";  
+  
+  if (frontDistance < 0.6f) {
+    // pedalPosition = -0.7f;
+    // groundSteeringAngle = -0.9f; //Added this
   } else {
     if (rearDistance < 0.3f) {
       pedalPosition = 0.4f;
@@ -104,13 +112,31 @@ void Behavior::step() noexcept
   }
 
   if (leftDistance < rightDistance) {
-    if (leftDistance < 0.2f) {
-      groundSteeringAngle = 0.2f;
+    if (leftDistance < 0.4f) {
+      groundSteeringAngle = -0.4f;
     }
   } else {
-    if (rightDistance < 0.2f) {
-      groundSteeringAngle = 0.2f;
+    if (rightDistance < 0.4f) {
+      groundSteeringAngle = 0.4f;
     }
+  }
+
+  if (leftDistance < 0.2f) {
+    groundSteeringAngle = -0.7f;
+  }
+  if (rightDistance < 0.2f) {
+    groundSteeringAngle = 0.7f;
+  }
+
+  if (frontDistance <1.0f) {
+    if (leftDistance > 2.0f && rightDistance > 2.0f) {
+      scenario = "turnLeft";
+    }
+    
+  }
+
+  if (scenario == "turnLeft") {
+    groundSteeringAngle = 1.0f;
   }
 
   {
@@ -134,6 +160,7 @@ double Behavior::convertIrVoltageToDistance(float voltage) const noexcept
   double voltageDividerR2 = 1000.0;
 
   double sensorVoltage = (voltageDividerR1 + voltageDividerR2) / voltageDividerR2 * voltage;
-  double distance = (2.5 - sensorVoltage) / 0.07;
+  //double distance = (2.5 - sensorVoltage) / 0.07;
+  double distance = -5.8454*pow(sensorVoltage,3) +36.3658*pow(sensorVoltage,2) -74.3506*sensorVoltage + 56.4574; //Added this
   return distance;
 }

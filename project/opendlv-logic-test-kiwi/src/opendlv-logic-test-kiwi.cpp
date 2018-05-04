@@ -59,6 +59,7 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::DistanceReading::ID(), onDistanceReading);
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
+    //In here it is decided what the car should do.
     auto atFrequency{[&VERBOSE, &behavior, &od4]() -> bool
       {
         behavior.step();
@@ -69,8 +70,8 @@ int32_t main(int32_t argc, char **argv) {
         od4.send(groundSteeringAngleRequest, sampleTime, 0);
         od4.send(pedalPositionRequest, sampleTime, 0);
         if (VERBOSE) {
-          std::cout << "Ground steering angle is " << groundSteeringAngleRequest.groundSteering()
-            << " and pedal position is " << pedalPositionRequest.position() << std::endl;
+          std::cout << "Steering " << groundSteeringAngleRequest.groundSteering()
+            << " Pedal " << pedalPositionRequest.position() << std::endl;
         }
 
         return true;
