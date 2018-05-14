@@ -36,6 +36,8 @@ class Behavior {
  public:
   opendlv::proxy::GroundSteeringRequest getGroundSteeringAngle() noexcept;
   opendlv::proxy::PedalPositionRequest getPedalPositionRequest() noexcept;
+  opendlv::proxy::DistanceReading getFrontUltrasonic() noexcept;
+  opendlv::proxy::DistanceReading getRearUltrasonic() noexcept;
   void setFrontUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
   void setRearUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
   void setLeftIr(opendlv::proxy::VoltageReading const &) noexcept;

@@ -65,13 +65,20 @@ int32_t main(int32_t argc, char **argv) {
         behavior.step();
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
+        auto frontUltrasonicReading = behavior.getFrontUltrasonic();
+        auto rearUltrasonicReading = behavior.getRearUltrasonic();
 
         cluon::data::TimeStamp sampleTime;
         od4.send(groundSteeringAngleRequest, sampleTime, 0);
         od4.send(pedalPositionRequest, sampleTime, 0);
         if (VERBOSE) {
           std::cout << "Steering " << groundSteeringAngleRequest.groundSteering()
-            << " Pedal " << pedalPositionRequest.position() << std::endl;
+            << " Pedal " << pedalPositionRequest.position() 
+            << " Front US " << frontUltrasonicReading.distance()
+            << " Rear US " << rearUltrasonicReading.distance()
+            // << " Left " << leftDistance
+            // << " Right " << rightDistance
+            << std::endl;
         }
 
         return true;

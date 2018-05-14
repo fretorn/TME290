@@ -47,6 +47,20 @@ opendlv::proxy::PedalPositionRequest Behavior::getPedalPositionRequest() noexcep
   return m_pedalPositionRequest;
 }
 
+//Added this
+opendlv::proxy::DistanceReading Behavior::getFrontUltrasonic() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_frontUltrasonicReadingMutex);
+  return m_frontUltrasonicReading;
+}
+
+//Added this
+opendlv::proxy::DistanceReading Behavior::getRearUltrasonic() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_rearUltrasonicReadingMutex);
+  return m_rearUltrasonicReading;
+}
+
 void Behavior::setFrontUltrasonic(opendlv::proxy::DistanceReading const &frontUltrasonicReading) noexcept
 {
   std::lock_guard<std::mutex> lock(m_frontUltrasonicReadingMutex);
@@ -71,11 +85,11 @@ void Behavior::setRightIr(opendlv::proxy::VoltageReading const &rightIrReading) 
   m_rightIrReading = rightIrReading;
 }
 
-//Added this
-
+float globalTime = 0.0f; //Added this
 
 void Behavior::step() noexcept
 {
+  globalTime = globalTime + 1.0f; //Added this
   opendlv::proxy::DistanceReading frontUltrasonicReading;
   opendlv::proxy::DistanceReading rearUltrasonicReading;
   opendlv::proxy::VoltageReading leftIrReading;
@@ -94,49 +108,61 @@ void Behavior::step() noexcept
 
   float frontDistance = frontUltrasonicReading.distance();
   float rearDistance = rearUltrasonicReading.distance();
+  // float rearDistancePublic = rearDistance;
   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
   double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
 
-  float pedalPosition = 0.7f;
+  float pedalPosition = 0.2f;
   float groundSteeringAngle = 0.0f;
 
   string scenario = "";  
   
   if (frontDistance < 0.6f) {
-    // pedalPosition = -0.7f;
-    // groundSteeringAngle = -0.9f; //Added this
+    pedalPosition = -0.2f;
+    groundSteeringAngle = -0.3f; //Added this
   } else {
     if (rearDistance < 0.3f) {
-      pedalPosition = 0.4f;
+      pedalPosition = 0.2f;
     }
   }
 
-  if (leftDistance < rightDistance) {
-    if (leftDistance < 0.4f) {
-      groundSteeringAngle = -0.4f;
-    }
-  } else {
-    if (rightDistance < 0.4f) {
-      groundSteeringAngle = 0.4f;
-    }
-  }
+  // if (leftDistance < rightDistance) {
+  //   if (leftDistance < 0.4f) {
+  //     groundSteeringAngle = -0.1f;
+  //   }
+  // } else {
+  //   if (rightDistance < 0.4f) {
+  //     groundSteeringAngle = 0.1f;
+  //   }
+  // }
 
-  if (leftDistance < 0.2f) {
-    groundSteeringAngle = -0.7f;
-  }
-  if (rightDistance < 0.2f) {
-    groundSteeringAngle = 0.7f;
-  }
+  // if (leftDistance < 0.2f) {
+  //   groundSteeringAngle = -0.2f;
+  // }
+  // if (rightDistance < 0.2f) {
+  //   groundSteeringAngle = 0.2f;
+  // }
 
-  if (frontDistance <1.0f) {
-    if (leftDistance > 2.0f && rightDistance > 2.0f) {
+  if (frontDistance <1.0f && (leftDistance > 2.0f || rightDistance > 2.0f)) {
+    //if (leftDistance > 2.0f && rightDistance > 2.0f) {
+    if (leftDistance > rightDistance) {
       scenario = "turnLeft";
-    }
+    } else if (rightDistance > leftDistance){
+      scenario = "turnRight";
+    } 
     
   }
 
   if (scenario == "turnLeft") {
-    groundSteeringAngle = 1.0f;
+    groundSteeringAngle = 0.3f;
+  } else {
+    if (scenario == "turnRight") {
+      groundSteeringAngle = -0.3f;
+    }
+  }
+
+  if (globalTime < 100.0f) {
+    pedalPosition = 0.0f;
   }
 
   {
