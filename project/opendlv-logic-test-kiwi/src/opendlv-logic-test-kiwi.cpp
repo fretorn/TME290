@@ -34,22 +34,19 @@ int32_t main(int32_t argc, char **argv) {
     float speed = std::stof(commandlineArguments["speed"]);
     float front = std::stof(commandlineArguments["front"]);
     float rear = std::stof(commandlineArguments["rear"]);
-    float side = std::stof(commandlineArguments["side"]);
+    float goalDistanceToWall = std::stof(commandlineArguments["goalDistanceToWall"]);
     float sideWall = std::stof(commandlineArguments["sideWall"]);
     float reverseTimeThreshold = std::stof(commandlineArguments["reverseTimeThreshold"]);
     float groundSteering = std::stof(commandlineArguments["groundSteering"]);
     float wallSteering = std::stof(commandlineArguments["wallSteering"]);
     float rearMin = std::stof(commandlineArguments["rearMin"]);
     float reverseSpeed = std::stof(commandlineArguments["reverseSpeed"]);
-    
-    
+    float Kp_side = std::stof(commandlineArguments["Kp_side"]);
+    float sideDistanceForStraightReverse = std::stof(commandlineArguments["sideDistanceForStraightReverse"]);
+    float frontDistance45 = std::stof(commandlineArguments["frontDistance45"]);
+    float sideDistance45 = std::stof(commandlineArguments["sideDistance45"]);
 
-    // (void)speed;
-
-    // cluon::OD4Session od4{CID};
-    // cluon::data::TimeStamp sampleTime;
-    // od4.send(speed, sampleTime, 0);
-    // od4.send(speed, sampleTime, 0);
+    
 
     Behavior behavior;
 
@@ -79,9 +76,14 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
     //In here it is decided what the car should do.
-    auto atFrequency{[&VERBOSE, &behavior, &od4, &speed, &front, &rear, &side, &sideWall, &reverseTimeThreshold, &groundSteering, &wallSteering, &rearMin, &reverseSpeed]() -> bool
+    auto atFrequency{[&VERBOSE, &behavior, &od4, &speed, &front, &rear, 
+    &goalDistanceToWall, &sideWall, &reverseTimeThreshold, &groundSteering, 
+    &wallSteering, &rearMin, &reverseSpeed, &FREQ, &Kp_side, 
+    &sideDistanceForStraightReverse, &frontDistance45, &sideDistance45]() -> bool
       {
-        behavior.step(speed, front, rear, side, sideWall, reverseTimeThreshold, groundSteering, wallSteering, rearMin, reverseSpeed);
+        behavior.step(speed, front, rear, goalDistanceToWall, sideWall, 
+        reverseTimeThreshold, groundSteering, wallSteering, rearMin, 
+        reverseSpeed, FREQ, Kp_side, sideDistanceForStraightReverse, frontDistance45, sideDistance45);
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
         auto frontUltrasonicReading = behavior.getFrontUltrasonic();

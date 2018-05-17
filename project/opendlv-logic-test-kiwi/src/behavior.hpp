@@ -43,7 +43,10 @@ class Behavior {
   void setRearUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
   void setLeftIr(opendlv::proxy::VoltageReading const &) noexcept;
   void setRightIr(opendlv::proxy::VoltageReading const &) noexcept;
-  void step(float speed, float front, float rear, float side, float sideWall, float reverseTimeThreshold, float groundSteering, float wallSteering, float rearMin, float reverseSpeed) noexcept;
+  void step(float speed, float front, float rear, float goalDistanceToWall, 
+  float sideWall, float reverseTimeThreshold, float groundSteering, 
+  float wallSteering, float rearMin, float reverseSpeed, float FREQ,
+   float Kp_side, float sideDistanceForStraightReverse, float frontDistance45, float sideDistance45) noexcept;
 
  private:
   double convertIrVoltageToDistance(float) const noexcept;

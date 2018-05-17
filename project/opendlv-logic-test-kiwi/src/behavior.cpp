@@ -93,11 +93,20 @@ void Behavior::setRightIr(opendlv::proxy::VoltageReading const &rightIrReading) 
 
 float globalTime = 0.0f; //Added this
 float reverseTime = 11.0f; //Added this
+float errorLeft = 0.0f;
+float errorRight = 0.0f;
+float groundSteeringAngleLeft = 0.0f;
+float groundSteeringAngleRight = 0.0f;
+float prev_groundSteeringAngle = 0.0f;
 
 int reverse = 0; 
 
-void Behavior::step(float speed, float front, float rear, float side, float sideWall, float reverseTimeThreshold, float groundSteering, float wallSteering, float rearMin, float reverseSpeed) noexcept
+void Behavior::step(float speed, float front, float rear, float goalDistanceToWall,
+ float sideWall, float reverseTimeThreshold, float groundSteering, float wallSteering,
+  float rearMin, float reverseSpeed, float FREQ, float Kp_side,
+   float sideDistanceForStraightReverse, float frontDistance45, float sideDistance45) noexcept
 {
+  float dt = 1.0f/FREQ; //Added this
   globalTime = globalTime + 1.0f; //Added this
   opendlv::proxy::DistanceReading frontUltrasonicReading;
   opendlv::proxy::DistanceReading rearUltrasonicReading;
@@ -117,51 +126,91 @@ void Behavior::step(float speed, float front, float rear, float side, float side
 
   float frontDistance = frontUltrasonicReading.distance();
   float rearDistance = rearUltrasonicReading.distance();
-  double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
-  double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
-
-  float groundSteeringAngle = 0.0f;
+  double leftDistanceDouble = convertIrVoltageToDistance(leftIrReading.voltage());
+  double rightDistanceDouble = convertIrVoltageToDistance(rightIrReading.voltage());
+  float leftDistance = (float) leftDistanceDouble;
+  float rightDistance = (float) rightDistanceDouble;
+  float groundSteeringAngle = 0.05f;
   float pedalPosition = speed;
+
+  (void)wallSteering;
 
   std::string scenario = ""; 
   
   if (frontDistance < front) {
     reverse = 1;
-
-    //TODO: make it stop reversing if too close to wall.
-    //TODO: Make a parameter for reverse speed.
     
   } else if (rearDistance < rear){
     pedalPosition = speed;
   }
 
-  if (frontDistance <front && (leftDistance > side || rightDistance > side)) {
-    if (leftDistance > rightDistance) {
-      scenario = "turnLeft";
-    } else if (rightDistance > leftDistance){
-      scenario = "turnRight";
-    }
-    
-  }
-  if (scenario == "turnLeft") {
-    groundSteeringAngle = groundSteering;
-  } else {
-    if (scenario == "turnRight") {
-      groundSteeringAngle = -groundSteering;
+  //Avoid 45 degree
+  if (frontDistance < frontDistance45) {
+    if (leftDistance < sideDistance45) {
+      reverse = 1;
+    } else if (rightDistance < sideDistance45) {
+      reverse = 1;
     }
   }
 
+  groundSteeringAngle = 0.05f;
+
+  // if (frontDistance < front && (leftDistance >goalDdistanceToWall || rightDistance >goalDdistanceToWall)) {
+  //   if (leftDistance > rightDistance) {
+  //     scenario = "turnLeft";
+  //   } else if (rightDistance > leftDistance){
+  //     scenario = "turnRight";
+  //   }
+    
+  // }
+  // if (scenario == "turnLeft") {
+  //   groundSteeringAngle = groundSteering;
+  // } else {
+  //   if (scenario == "turnRight") {
+  //     groundSteeringAngle = -groundSteering;
+  //   }
+  // }
+
+  // if (leftDistance < sideWall) {
+  //   groundSteeringAngle = groundSteeringAngle - wallSteering;
+  // } else if (rightDistance < sideWall) {
+  //   groundSteeringAngle = groundSteeringAngle + wallSteering;
+  // }
+
+  groundSteeringAngleLeft = 0.0f;
+  groundSteeringAngleRight = 0.0f;
+
   if (leftDistance < sideWall) {
-    groundSteeringAngle = groundSteeringAngle - wallSteering;
-  } else if (rightDistance < sideWall) {
-    groundSteeringAngle = groundSteeringAngle + wallSteering;
+    // P-controller
+    errorLeft = goalDistanceToWall - leftDistance;  
+    groundSteeringAngleLeft = Kp_side * errorLeft; // Proportional term
   }
+  if (rightDistance < sideWall) {
+    errorRight = goalDistanceToWall - rightDistance;  
+    groundSteeringAngleRight = Kp_side * errorRight; // Proportional term
+  }
+  
+  groundSteeringAngle = 0.05f -(groundSteeringAngleLeft - groundSteeringAngleRight);
 
   //Reverse
   if (reverse == 1) {
-    reverseTime = reverseTime + 1.0f;
+    reverseTime = reverseTime + dt;
     pedalPosition = -reverseSpeed;
-    groundSteeringAngle = -groundSteering; //Added this
+
+    // if (prev_groundSteeringAngle < 0.0f && prev_groundSteeringAngle > 0.0f) {
+    //   groundSteeringAngle = groundSteeringAngle;
+    // } else {
+    //   groundSteeringAngle = -groundSteering; //Turn right
+    // }
+    
+
+    if (leftDistance < sideDistanceForStraightReverse || rightDistance < sideDistanceForStraightReverse) {
+      // groundSteeringAngle = 0.0f; //Reverse straight
+    } else if (rightDistance < leftDistance) {
+      groundSteeringAngle = -groundSteering; //Turn right
+    } else if (leftDistance < rightDistance) {
+      groundSteeringAngle = groundSteering; //Turn left
+    }
   } 
   
   if (reverseTime > reverseTimeThreshold) {
@@ -185,6 +234,9 @@ void Behavior::step(float speed, float front, float rear, float side, float side
     pedalPositionRequest.position(pedalPosition);
     m_pedalPositionRequest = pedalPositionRequest;
   }
+
+  globalTime = globalTime + dt; //Added this 
+  prev_groundSteeringAngle = groundSteeringAngle;
 }
 
 // TODO: This is a rough estimate, improve by looking into the sensor specifications.
