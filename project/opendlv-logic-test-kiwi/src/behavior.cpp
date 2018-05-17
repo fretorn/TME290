@@ -134,93 +134,125 @@ void Behavior::step(float speed, float front, float rear, float goalDistanceToWa
   float pedalPosition = speed;
 
   (void)wallSteering;
-
-  std::string scenario = ""; 
+  (void)goalDistanceToWall;
+  (void)reverseTimeThreshold;
+  (void)rearMin;
+  (void)Kp_side;
+  (void)sideDistanceForStraightReverse;
+  (void)frontDistance45;
+  (void)sideDistance45;
   
-  if (frontDistance < front) {
-    reverse = 1;
-    
-  } else if (rearDistance < rear){
-    pedalPosition = speed;
-  }
 
-  //Avoid 45 degree
-  if (frontDistance < frontDistance45) {
-    if (leftDistance < sideDistance45) {
-      reverse = 1;
-    } else if (rightDistance < sideDistance45) {
-      reverse = 1;
-    }
-  }
 
-  groundSteeringAngle = 0.05f;
-
-  // if (frontDistance < front && (leftDistance >goalDdistanceToWall || rightDistance >goalDdistanceToWall)) {
-  //   if (leftDistance > rightDistance) {
-  //     scenario = "turnLeft";
-  //   } else if (rightDistance > leftDistance){
-  //     scenario = "turnRight";
-  //   }
-    
-  // }
-  // if (scenario == "turnLeft") {
-  //   groundSteeringAngle = groundSteering;
-  // } else {
-  //   if (scenario == "turnRight") {
-  //     groundSteeringAngle = -groundSteering;
-  //   }
-  // }
-
-  // if (leftDistance < sideWall) {
-  //   groundSteeringAngle = groundSteeringAngle - wallSteering;
-  // } else if (rightDistance < sideWall) {
-  //   groundSteeringAngle = groundSteeringAngle + wallSteering;
-  // }
-
-  groundSteeringAngleLeft = 0.0f;
-  groundSteeringAngleRight = 0.0f;
 
   if (leftDistance < sideWall) {
-    // P-controller
-    errorLeft = goalDistanceToWall - leftDistance;  
-    groundSteeringAngleLeft = Kp_side * errorLeft; // Proportional term
+    groundSteeringAngle = -groundSteering; //Turn right
   }
+
   if (rightDistance < sideWall) {
-    errorRight = goalDistanceToWall - rightDistance;  
-    groundSteeringAngleRight = Kp_side * errorRight; // Proportional term
+    groundSteeringAngle = groundSteering; //Turn left
   }
+
+  if (rearDistance < rear) {
+    pedalPosition = speed; //Go forward
+  }
+
+  if (frontDistance < front) {
+    pedalPosition = -reverseSpeed; //Reverse
+    groundSteeringAngle = -groundSteeringAngle; //Invert steering
+  }
+
+
+
+
+
+
+  // std::string scenario = ""; 
   
-  groundSteeringAngle = 0.05f -(groundSteeringAngleLeft - groundSteeringAngleRight);
+  // if (frontDistance < front) {
+  //   reverse = 1;
+    
+  // } else if (rearDistance < rear){
+  //   pedalPosition = speed;
+  // }
 
-  //Reverse
-  if (reverse == 1) {
-    reverseTime = reverseTime + dt;
-    pedalPosition = -reverseSpeed;
+  // //Avoid 45 degree
+  // if (frontDistance < frontDistance45) {
+  //   if (leftDistance < sideDistance45) {
+  //     reverse = 1;
+  //   } else if (rightDistance < sideDistance45) {
+  //     reverse = 1;
+  //   }
+  // }
 
-    // if (prev_groundSteeringAngle < 0.0f && prev_groundSteeringAngle > 0.0f) {
-    //   groundSteeringAngle = groundSteeringAngle;
-    // } else {
-    //   groundSteeringAngle = -groundSteering; //Turn right
-    // }
+  // groundSteeringAngle = 0.05f;
+
+  // // if (frontDistance < front && (leftDistance >goalDdistanceToWall || rightDistance >goalDdistanceToWall)) {
+  // //   if (leftDistance > rightDistance) {
+  // //     scenario = "turnLeft";
+  // //   } else if (rightDistance > leftDistance){
+  // //     scenario = "turnRight";
+  // //   }
+    
+  // // }
+  // // if (scenario == "turnLeft") {
+  // //   groundSteeringAngle = groundSteering;
+  // // } else {
+  // //   if (scenario == "turnRight") {
+  // //     groundSteeringAngle = -groundSteering;
+  // //   }
+  // // }
+
+  // // if (leftDistance < sideWall) {
+  // //   groundSteeringAngle = groundSteeringAngle - wallSteering;
+  // // } else if (rightDistance < sideWall) {
+  // //   groundSteeringAngle = groundSteeringAngle + wallSteering;
+  // // }
+
+  // groundSteeringAngleLeft = 0.0f;
+  // groundSteeringAngleRight = 0.0f;
+
+  // if (leftDistance < sideWall) {
+  //   // P-controller
+  //   errorLeft = goalDistanceToWall - leftDistance;  
+  //   groundSteeringAngleLeft = Kp_side * errorLeft; // Proportional term
+  // }
+  // if (rightDistance < sideWall) {
+  //   errorRight = goalDistanceToWall - rightDistance;  
+  //   groundSteeringAngleRight = Kp_side * errorRight; // Proportional term
+  // }
+  
+  // groundSteeringAngle = 0.05f -(groundSteeringAngleLeft - groundSteeringAngleRight);
+
+  // //Reverse
+  // if (reverse == 1) {
+  //   reverseTime = reverseTime + dt;
+  //   pedalPosition = -reverseSpeed;
+
+  //   // if (prev_groundSteeringAngle < 0.0f && prev_groundSteeringAngle > 0.0f) {
+  //   //   groundSteeringAngle = groundSteeringAngle;
+  //   // } else {
+  //   //   groundSteeringAngle = -groundSteering; //Turn right
+  //   // }
     
 
-    if (leftDistance < sideDistanceForStraightReverse || rightDistance < sideDistanceForStraightReverse) {
-      // groundSteeringAngle = 0.0f; //Reverse straight
-    } else if (rightDistance < leftDistance) {
-      groundSteeringAngle = -groundSteering; //Turn right
-    } else if (leftDistance < rightDistance) {
-      groundSteeringAngle = groundSteering; //Turn left
-    }
-  } 
+  //   if (leftDistance < sideDistanceForStraightReverse || rightDistance < sideDistanceForStraightReverse) {
+  //     // groundSteeringAngle = 0.0f; //Reverse straight
+  //   } else if (rightDistance < leftDistance) {
+  //     groundSteeringAngle = -groundSteering; //Turn right
+  //   } else if (leftDistance < rightDistance) {
+  //     groundSteeringAngle = groundSteering; //Turn left
+  //   }
+  // } 
   
-  if (reverseTime > reverseTimeThreshold) {
-    reverse = 0;
-    reverseTime = 0.0f;
-  }
+  // if (reverseTime > reverseTimeThreshold) {
+  //   reverse = 0;
+  //   reverseTime = 0.0f;
+  // }
 
-  if (rearDistance < rearMin) {
-    pedalPosition = speed;
-  }
+  // if (rearDistance < rearMin) {
+  //   pedalPosition = speed;
+  // }
 
   {
     std::lock_guard<std::mutex> lock1(m_groundSteeringAngleRequestMutex);
