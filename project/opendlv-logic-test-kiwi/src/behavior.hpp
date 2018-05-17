@@ -38,11 +38,12 @@ class Behavior {
   opendlv::proxy::PedalPositionRequest getPedalPositionRequest() noexcept;
   opendlv::proxy::DistanceReading getFrontUltrasonic() noexcept;
   opendlv::proxy::DistanceReading getRearUltrasonic() noexcept;
+  double getLeftIr() noexcept;
   void setFrontUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
   void setRearUltrasonic(opendlv::proxy::DistanceReading const &) noexcept;
   void setLeftIr(opendlv::proxy::VoltageReading const &) noexcept;
   void setRightIr(opendlv::proxy::VoltageReading const &) noexcept;
-  void step() noexcept;
+  void step(float speed, float front, float rear, float side, float sideWall, float reverseTimeThreshold, float groundSteering, float wallSteering, float rearMin, float reverseSpeed) noexcept;
 
  private:
   double convertIrVoltageToDistance(float) const noexcept;
@@ -61,5 +62,7 @@ class Behavior {
   std::mutex m_groundSteeringAngleRequestMutex;
   std::mutex m_pedalPositionRequestMutex;
 };
+
+// extern float speed;
 
 #endif

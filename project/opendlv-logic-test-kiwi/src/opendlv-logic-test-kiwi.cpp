@@ -31,6 +31,25 @@ int32_t main(int32_t argc, char **argv) {
     bool const VERBOSE{commandlineArguments.count("verbose") != 0};
     uint16_t const CID = std::stoi(commandlineArguments["cid"]);
     float const FREQ = std::stof(commandlineArguments["freq"]);
+    float speed = std::stof(commandlineArguments["speed"]);
+    float front = std::stof(commandlineArguments["front"]);
+    float rear = std::stof(commandlineArguments["rear"]);
+    float side = std::stof(commandlineArguments["side"]);
+    float sideWall = std::stof(commandlineArguments["sideWall"]);
+    float reverseTimeThreshold = std::stof(commandlineArguments["reverseTimeThreshold"]);
+    float groundSteering = std::stof(commandlineArguments["groundSteering"]);
+    float wallSteering = std::stof(commandlineArguments["wallSteering"]);
+    float rearMin = std::stof(commandlineArguments["rearMin"]);
+    float reverseSpeed = std::stof(commandlineArguments["reverseSpeed"]);
+    
+    
+
+    // (void)speed;
+
+    // cluon::OD4Session od4{CID};
+    // cluon::data::TimeStamp sampleTime;
+    // od4.send(speed, sampleTime, 0);
+    // od4.send(speed, sampleTime, 0);
 
     Behavior behavior;
 
@@ -60,23 +79,24 @@ int32_t main(int32_t argc, char **argv) {
     od4.dataTrigger(opendlv::proxy::VoltageReading::ID(), onVoltageReading);
 
     //In here it is decided what the car should do.
-    auto atFrequency{[&VERBOSE, &behavior, &od4]() -> bool
+    auto atFrequency{[&VERBOSE, &behavior, &od4, &speed, &front, &rear, &side, &sideWall, &reverseTimeThreshold, &groundSteering, &wallSteering, &rearMin, &reverseSpeed]() -> bool
       {
-        behavior.step();
+        behavior.step(speed, front, rear, side, sideWall, reverseTimeThreshold, groundSteering, wallSteering, rearMin, reverseSpeed);
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
         auto frontUltrasonicReading = behavior.getFrontUltrasonic();
         auto rearUltrasonicReading = behavior.getRearUltrasonic();
+        auto leftIrReading = behavior.getLeftIr();
 
         cluon::data::TimeStamp sampleTime;
         od4.send(groundSteeringAngleRequest, sampleTime, 0);
         od4.send(pedalPositionRequest, sampleTime, 0);
         if (VERBOSE) {
-          std::cout << "Steering " << groundSteeringAngleRequest.groundSteering()
-            << " Pedal " << pedalPositionRequest.position() 
-            << " Front US " << frontUltrasonicReading.distance()
-            << " Rear US " << rearUltrasonicReading.distance()
-            // << " Left " << leftDistance
+          std::cout << "Steer " << std::setw(6) << groundSteeringAngleRequest.groundSteering()
+            << " Pedal " << std::setw(6) << pedalPositionRequest.position() 
+            << " Front " <<  std::setw(6) << frontUltrasonicReading.distance()
+            << " Rear " <<  std::setw(6) << rearUltrasonicReading.distance()
+            << " Left " <<  std::setw(6) << leftIrReading
             // << " Right " << rightDistance
             << std::endl;
         }

@@ -17,7 +17,6 @@
 
 #include "behavior.hpp"
 #include <cmath>
-using namespace std; //Added this
 
 Behavior::Behavior() noexcept:
   m_frontUltrasonicReading{},
@@ -61,6 +60,13 @@ opendlv::proxy::DistanceReading Behavior::getRearUltrasonic() noexcept
   return m_rearUltrasonicReading;
 }
 
+//Added this
+double Behavior::getLeftIr() noexcept
+{
+  std::lock_guard<std::mutex> lock(m_leftIrReadingMutex);
+  return convertIrVoltageToDistance(m_leftIrReading.voltage());
+}
+
 void Behavior::setFrontUltrasonic(opendlv::proxy::DistanceReading const &frontUltrasonicReading) noexcept
 {
   std::lock_guard<std::mutex> lock(m_frontUltrasonicReadingMutex);
@@ -86,8 +92,11 @@ void Behavior::setRightIr(opendlv::proxy::VoltageReading const &rightIrReading) 
 }
 
 float globalTime = 0.0f; //Added this
+float reverseTime = 11.0f; //Added this
 
-void Behavior::step() noexcept
+int reverse = 0; 
+
+void Behavior::step(float speed, float front, float rear, float side, float sideWall, float reverseTimeThreshold, float groundSteering, float wallSteering, float rearMin, float reverseSpeed) noexcept
 {
   globalTime = globalTime + 1.0f; //Added this
   opendlv::proxy::DistanceReading frontUltrasonicReading;
@@ -108,61 +117,60 @@ void Behavior::step() noexcept
 
   float frontDistance = frontUltrasonicReading.distance();
   float rearDistance = rearUltrasonicReading.distance();
-  // float rearDistancePublic = rearDistance;
   double leftDistance = convertIrVoltageToDistance(leftIrReading.voltage());
   double rightDistance = convertIrVoltageToDistance(rightIrReading.voltage());
 
-  float pedalPosition = 0.2f;
   float groundSteeringAngle = 0.0f;
+  float pedalPosition = speed;
 
-  string scenario = "";  
+  std::string scenario = ""; 
   
-  if (frontDistance < 0.6f) {
-    pedalPosition = -0.2f;
-    groundSteeringAngle = -0.3f; //Added this
-  } else {
-    if (rearDistance < 0.3f) {
-      pedalPosition = 0.2f;
-    }
+  if (frontDistance < front) {
+    reverse = 1;
+
+    //TODO: make it stop reversing if too close to wall.
+    //TODO: Make a parameter for reverse speed.
+    
+  } else if (rearDistance < rear){
+    pedalPosition = speed;
   }
 
-  // if (leftDistance < rightDistance) {
-  //   if (leftDistance < 0.4f) {
-  //     groundSteeringAngle = -0.1f;
-  //   }
-  // } else {
-  //   if (rightDistance < 0.4f) {
-  //     groundSteeringAngle = 0.1f;
-  //   }
-  // }
-
-  // if (leftDistance < 0.2f) {
-  //   groundSteeringAngle = -0.2f;
-  // }
-  // if (rightDistance < 0.2f) {
-  //   groundSteeringAngle = 0.2f;
-  // }
-
-  if (frontDistance <1.0f && (leftDistance > 2.0f || rightDistance > 2.0f)) {
-    //if (leftDistance > 2.0f && rightDistance > 2.0f) {
+  if (frontDistance <front && (leftDistance > side || rightDistance > side)) {
     if (leftDistance > rightDistance) {
       scenario = "turnLeft";
     } else if (rightDistance > leftDistance){
       scenario = "turnRight";
-    } 
+    }
     
   }
-
   if (scenario == "turnLeft") {
-    groundSteeringAngle = 0.3f;
+    groundSteeringAngle = groundSteering;
   } else {
     if (scenario == "turnRight") {
-      groundSteeringAngle = -0.3f;
+      groundSteeringAngle = -groundSteering;
     }
   }
 
-  if (globalTime < 100.0f) {
-    pedalPosition = 0.0f;
+  if (leftDistance < sideWall) {
+    groundSteeringAngle = groundSteeringAngle - wallSteering;
+  } else if (rightDistance < sideWall) {
+    groundSteeringAngle = groundSteeringAngle + wallSteering;
+  }
+
+  //Reverse
+  if (reverse == 1) {
+    reverseTime = reverseTime + 1.0f;
+    pedalPosition = -reverseSpeed;
+    groundSteeringAngle = -groundSteering; //Added this
+  } 
+  
+  if (reverseTime > reverseTimeThreshold) {
+    reverse = 0;
+    reverseTime = 0.0f;
+  }
+
+  if (rearDistance < rearMin) {
+    pedalPosition = speed;
   }
 
   {
@@ -186,7 +194,6 @@ double Behavior::convertIrVoltageToDistance(float voltage) const noexcept
   double voltageDividerR2 = 1000.0;
 
   double sensorVoltage = (voltageDividerR1 + voltageDividerR2) / voltageDividerR2 * voltage;
-  //double distance = (2.5 - sensorVoltage) / 0.07;
   double distance = -5.8454*pow(sensorVoltage,3) +36.3658*pow(sensorVoltage,2) -74.3506*sensorVoltage + 56.4574; //Added this
   return distance;
 }
