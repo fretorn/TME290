@@ -1,6 +1,6 @@
 #!/bin/bash
 
 cd /home/fredrik/mytest/project/opendlv-logic-test-kiwi/
-docker build -f Dockerfile.armhf -t fretorn/opendlv-logic-test-kiwi-armhf:project_v2 .
-docker push fretorn/opendlv-logic-test-kiwi-armhf:project_v2
+docker build -f Dockerfile.armhf -t fretorn/opendlv-logic-test-kiwi-armhf:project_v3 .
+docker push fretorn/opendlv-logic-test-kiwi-armhf:project_v3
 

@@ -46,7 +46,8 @@ class Behavior {
   void step(float speed, float front, float rear, float goalDistanceToWall, 
   float sideWall, float reverseTimeThreshold, float groundSteering, 
   float wallSteering, float rearMin, float reverseSpeed, float FREQ,
-   float Kp_side, float sideDistanceForStraightReverse, float frontDistance45, float sideDistance45) noexcept;
+   float Kp_side, float sideDistanceForStraightReverse, float frontDistance45, float sideDistance45
+   , float forwardTimeAfterReverseLimit, float addAngleAfterReverse) noexcept;
 
  private:
   double convertIrVoltageToDistance(float) const noexcept;

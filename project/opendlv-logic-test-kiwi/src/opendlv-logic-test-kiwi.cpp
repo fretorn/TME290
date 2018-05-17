@@ -45,7 +45,8 @@ int32_t main(int32_t argc, char **argv) {
     float sideDistanceForStraightReverse = std::stof(commandlineArguments["sideDistanceForStraightReverse"]);
     float frontDistance45 = std::stof(commandlineArguments["frontDistance45"]);
     float sideDistance45 = std::stof(commandlineArguments["sideDistance45"]);
-
+    float forwardTimeAfterReverseLimit = std::stof(commandlineArguments["forwardTimeAfterReverseLimit"]);
+    float addAngleAfterReverse = std::stof(commandlineArguments["addAngleAfterReverse"]);
     
 
     Behavior behavior;
@@ -79,11 +80,13 @@ int32_t main(int32_t argc, char **argv) {
     auto atFrequency{[&VERBOSE, &behavior, &od4, &speed, &front, &rear, 
     &goalDistanceToWall, &sideWall, &reverseTimeThreshold, &groundSteering, 
     &wallSteering, &rearMin, &reverseSpeed, &FREQ, &Kp_side, 
-    &sideDistanceForStraightReverse, &frontDistance45, &sideDistance45]() -> bool
+    &sideDistanceForStraightReverse, &frontDistance45, &sideDistance45,
+    &forwardTimeAfterReverseLimit, &addAngleAfterReverse]() -> bool
       {
         behavior.step(speed, front, rear, goalDistanceToWall, sideWall, 
         reverseTimeThreshold, groundSteering, wallSteering, rearMin, 
-        reverseSpeed, FREQ, Kp_side, sideDistanceForStraightReverse, frontDistance45, sideDistance45);
+        reverseSpeed, FREQ, Kp_side, sideDistanceForStraightReverse, frontDistance45, sideDistance45,
+        forwardTimeAfterReverseLimit, addAngleAfterReverse);
         auto groundSteeringAngleRequest = behavior.getGroundSteeringAngle();
         auto pedalPositionRequest = behavior.getPedalPositionRequest();
         auto frontUltrasonicReading = behavior.getFrontUltrasonic();
