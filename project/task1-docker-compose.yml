@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+ logic:
+  image: fretorn/opendlv-logic-test-kiwi-armhf:project_v3
+  network_mode: "host"
+  command: "/usr/bin/opendlv-logic-test-kiwi --cid=112 --freq=60
+ --frame-id=0 --verbose --speed=0.113 --front=0.8 --rear=0.4
+ --goalDistanceToWall=50 --sideWall=50 --reverseTimeThreshold=1
+ --groundSteering=0.3 --wallSteering=0.2 --rearMin=0.33
+ --reverseSpeed=0.42 --Kp_side=0.012
+ --sideDistanceForStraightReverse=8 --frontDistance45=0.5
+ --sideDistance45=50 --forwardTimeAfterReverseLimit=0.8
+ --addAngleAfterReverse=0.1"
